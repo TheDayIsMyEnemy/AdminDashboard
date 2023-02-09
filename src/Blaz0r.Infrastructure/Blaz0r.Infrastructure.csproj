@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Blaz0r.Domain\Blaz0r.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
