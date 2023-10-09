@@ -2,32 +2,52 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using BlazorTemplate.Server.Data;
 using MudBlazor.Services;
+using Serilog;
 
-var builder = WebApplication.CreateBuilder(args);
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .CreateBootstrapLogger();
 
-// Add services to the container.
-builder.Services.AddRazorPages();
-builder.Services.AddServerSideBlazor();
-builder.Services.AddMudServices();
-builder.Services.AddSingleton<WeatherForecastService>();
+Log.Information("Starting up!");
 
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
+try
 {
-    app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
+    var builder = WebApplication.CreateBuilder(args);
+
+    builder.Host.UseSerilog((context, services, loggerConfig) =>
+        loggerConfig.ReadFrom.Configuration(context.Configuration));
+
+    builder.Services.AddRazorPages();
+    builder.Services.AddServerSideBlazor();
+    builder.Services.AddMudServices();
+    builder.Services.AddSingleton<WeatherForecastService>();
+
+    var app = builder.Build();
+
+    if (!app.Environment.IsDevelopment())
+    {
+        app.UseExceptionHandler("/Error");
+        app.UseHsts();
+    }
+
+    app.UseHttpsRedirection();
+
+    app.UseStaticFiles();
+
+    app.UseRouting();
+
+    app.MapBlazorHub();
+    app.MapFallbackToPage("/_Host");
+
+    app.Run();
+
+    Log.Information("Stopped cleanly");
 }
-
-app.UseHttpsRedirection();
-
-app.UseStaticFiles();
-
-app.UseRouting();
-
-app.MapBlazorHub();
-app.MapFallbackToPage("/_Host");
-
-app.Run();
+catch (Exception ex)
+{
+    Log.Fatal(ex, "An unhandled exception occurred during bootstrapping");
+}
+finally
+{
+    Log.CloseAndFlush();
+}
