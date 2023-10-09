@@ -1,0 +1,62 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{A484A00B-1491-4AF8-8DAB-CD1BFA7F83AC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorTemplate.Application", "src\BlazorTemplate.Application\BlazorTemplate.Application.csproj", "{D0F9733F-02CF-46BC-B81F-692AF7FA128E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorTemplate.Domain", "src\BlazorTemplate.Domain\BlazorTemplate.Domain.csproj", "{23BA6E71-5C73-4DA5-8AE8-73DCB8A67D27}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorTemplate.Infrastructure", "src\BlazorTemplate.Infrastructure\BlazorTemplate.Infrastructure.csproj", "{5DA9C865-D5AF-4579-BBDB-8C153FE2252D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorTemplate.Server", "src\BlazorTemplate.Server\BlazorTemplate.Server.csproj", "{FC4A5529-C5B8-4301-BB92-01FF527BE58B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorTemplate.UI.Components", "src\BlazorTemplate.UI.Components\BlazorTemplate.UI.Components.csproj", "{01987889-9551-4991-94B6-47B27EF33CA0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorTemplate.UI.Pages", "src\BlazorTemplate.UI.Pages\BlazorTemplate.UI.Pages.csproj", "{AA01F86C-E280-4FBD-921C-F8A9591D6A2C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D0F9733F-02CF-46BC-B81F-692AF7FA128E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0F9733F-02CF-46BC-B81F-692AF7FA128E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0F9733F-02CF-46BC-B81F-692AF7FA128E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0F9733F-02CF-46BC-B81F-692AF7FA128E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{23BA6E71-5C73-4DA5-8AE8-73DCB8A67D27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{23BA6E71-5C73-4DA5-8AE8-73DCB8A67D27}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{23BA6E71-5C73-4DA5-8AE8-73DCB8A67D27}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{23BA6E71-5C73-4DA5-8AE8-73DCB8A67D27}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5DA9C865-D5AF-4579-BBDB-8C153FE2252D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5DA9C865-D5AF-4579-BBDB-8C153FE2252D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5DA9C865-D5AF-4579-BBDB-8C153FE2252D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5DA9C865-D5AF-4579-BBDB-8C153FE2252D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FC4A5529-C5B8-4301-BB92-01FF527BE58B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC4A5529-C5B8-4301-BB92-01FF527BE58B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC4A5529-C5B8-4301-BB92-01FF527BE58B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC4A5529-C5B8-4301-BB92-01FF527BE58B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{01987889-9551-4991-94B6-47B27EF33CA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{01987889-9551-4991-94B6-47B27EF33CA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{01987889-9551-4991-94B6-47B27EF33CA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{01987889-9551-4991-94B6-47B27EF33CA0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA01F86C-E280-4FBD-921C-F8A9591D6A2C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA01F86C-E280-4FBD-921C-F8A9591D6A2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA01F86C-E280-4FBD-921C-F8A9591D6A2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA01F86C-E280-4FBD-921C-F8A9591D6A2C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D0F9733F-02CF-46BC-B81F-692AF7FA128E} = {A484A00B-1491-4AF8-8DAB-CD1BFA7F83AC}
+		{23BA6E71-5C73-4DA5-8AE8-73DCB8A67D27} = {A484A00B-1491-4AF8-8DAB-CD1BFA7F83AC}
+		{5DA9C865-D5AF-4579-BBDB-8C153FE2252D} = {A484A00B-1491-4AF8-8DAB-CD1BFA7F83AC}
+		{FC4A5529-C5B8-4301-BB92-01FF527BE58B} = {A484A00B-1491-4AF8-8DAB-CD1BFA7F83AC}
+		{01987889-9551-4991-94B6-47B27EF33CA0} = {A484A00B-1491-4AF8-8DAB-CD1BFA7F83AC}
+		{AA01F86C-E280-4FBD-921C-F8A9591D6A2C} = {A484A00B-1491-4AF8-8DAB-CD1BFA7F83AC}
+	EndGlobalSection
+EndGlobal
