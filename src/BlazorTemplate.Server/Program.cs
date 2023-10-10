@@ -1,8 +1,9 @@
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-using BlazorTemplate.Server.Data;
 using MudBlazor.Services;
 using Serilog;
+using BlazorTemplate.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
+using BlazorTemplate.Server;
+using BlazorTemplate.Infrastructure;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
@@ -17,10 +18,24 @@ try
     builder.Host.UseSerilog((context, services, loggerConfig) =>
         loggerConfig.ReadFrom.Configuration(context.Configuration));
 
+    var connectionStr = builder.Configuration.GetConnectionString("Default");
+    builder.Services.AddDbContextFactory<AppDbContext>(
+        options =>
+            options
+                .UseMySql(connectionStr, ServerVersion.AutoDetect(connectionStr))
+                .LogTo(Console.WriteLine, LogLevel.Information)
+                .EnableSensitiveDataLogging()
+                .EnableDetailedErrors());
+
+    builder.Services.AddSecurity();
+
     builder.Services.AddRazorPages();
     builder.Services.AddServerSideBlazor();
     builder.Services.AddMudServices();
-    builder.Services.AddSingleton<WeatherForecastService>();
+
+    builder.Services.AddApplicationServices(builder.Configuration, builder.Environment);
+    builder.Services.AddHttpClients(builder.Configuration);
+    builder.Services.ConfigureOptions(builder.Configuration);
 
     var app = builder.Build();
 
@@ -36,8 +51,13 @@ try
 
     app.UseRouting();
 
-    app.MapBlazorHub();
+    app.UseAuthentication();
+    app.UseAuthorization();
+
+    app.MapBlazorHub().RequireAuthorization();
     app.MapFallbackToPage("/_Host");
+
+    await DbInitializer.Seed(app.Services);
 
     app.Run();
 

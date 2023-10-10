@@ -1,0 +1,106 @@
+@page "/user-management"
+@inherits IndexBase
+@using FilterShop.Infrastructure
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Roles = $"{RoleNames.SuperAdmin},{RoleNames.Admin}")]
+
+<PageTitle>User Management</PageTitle>
+
+<MudTable Items="Users"
+          Hover="true"
+          Filter="new Func<User, bool>(FilterUsers)"
+          Loading="IsLoading">
+    <ToolBarContent>
+        <MudFab StartIcon="@Icons.Material.Filled.PersonAdd"
+                Color="Color.Primary"
+                Size="Size.Small"
+                Class="fab"
+                OnClick="OpenCreateUserDialog" />
+        <MudSpacer />
+        <MudTextField @bind-Value="SearchQuery"
+                      Placeholder="Search"
+                      Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search"
+                      IconSize="Size.Small"
+                      Class="search-field mt-0" />
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>
+            <MudTableSortLabel SortBy="new Func<User, object?>(x=>x?.Email!)">
+                Email
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortBy="new Func<User, object?>(x=>x?.PhoneNumber!)">
+                PhoneNumber
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortBy="new Func<User, object>(x=>x.IpAddress!)">
+                IP
+            </MudTableSortLabel>
+         </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortBy="new Func<User, object>(x=>x?.UserAgent!)">
+                UserAgent
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortBy="new Func<User, object>(x=>x.LastLoginDate!)">
+                LastLogin
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortBy="new Func<User, object>(x=>x?.LockoutEnd!)">
+                LockoutEnd
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortBy="new Func<User, object>(x=>x.IsEnabled)">
+                Status
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh>Actions</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Email">@context.Email</MudTd>
+        <MudTd DataLabel="PhoneNumber">@context.PhoneNumber</MudTd>
+        <MudTd DataLabel="IP">@context.IpAddress</MudTd>
+        <MudTd DataLabel="UserAgent">@context.UserAgent</MudTd>
+        <MudTd DataLabel="LastLogin">@context.LastLoginDate?.ToLocalTime()</MudTd>
+        <MudTd DataLabel="LockoutEnd">@context.LockoutEnd?.ToLocalTime()</MudTd>
+        <MudTd DataLabel="Status">@(context.IsEnabled ? "Enabled" : "Disabled")</MudTd>
+        <MudTd DataLabel="Actions">
+            <MudMenu Icon="@Icons.Material.Filled.MoreHoriz" Dense="true" ListClass="list-item">
+                <MudMenuItem Icon="@Icons.Material.Filled.AssignmentInd"
+                             IconSize="Size.Small"
+                             OnClick="(e) => AssignRoles(context)">
+                    Assign Roles
+                </MudMenuItem>
+                @if (CurrentUserId != context.Id)
+                {
+                    <MudMenuItem Icon="@Icons.Material.Filled.Block"
+                             IconSize="Size.Small"
+                             OnClick="(e) => EnableOrDisableUserAccount(context)">
+                        @(context.IsEnabled ? "Disable Account" : "Enable Account")
+                    </MudMenuItem>
+                    <MudMenuItem Icon="@Icons.Material.Filled.LockReset"
+                             IconSize="Size.Small"
+                             OnClick="(e) => ResetAccountLockout(context)"
+                             Disabled="@(context.LockoutEnd.HasValue ? false : true)">
+                        Reset Lockout
+                    </MudMenuItem>
+                    <MudMenuItem Icon="@Icons.Material.Filled.Delete"
+                             IconColor="Color.Error"
+                             IconSize="Size.Small"
+                             OnClick="(e) => DeleteUser(context)">
+                        Delete
+                    </MudMenuItem>
+                }
+            </MudMenu>
+        </MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>

@@ -1,0 +1,44 @@
+<MudDialog ClassActions="ma-2">
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            @if(!string.IsNullOrWhiteSpace(TitleIcon)){
+                <MudIcon Icon="@TitleIcon" Color="@TitleIconColor" Class="mr-3 mb-n1" />
+            }
+            @Title
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudText>@Content</MudText>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Color="Color.Transparent" Variant="Variant.Filled" Size="Size.Small" OnClick="Cancel">
+            Cancel
+        </MudButton>
+        <MudButton Color="@ConfirmationButtonColor" Variant="Variant.Filled" Size="Size.Small" OnClick="Ok">
+            @ConfirmationButtonText
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private MudDialogInstance _mudDialog { get; set; } = null!;
+
+    [Parameter]
+    public string Title { get; set; } = null!;
+    [Parameter]
+    public string? TitleIcon { get; set; }
+    [Parameter]
+    public MudBlazor.Color TitleIconColor { get; set; } = Color.Default;
+
+    [Parameter]
+    public string Content { get; set; } = null!;
+
+    [Parameter]
+    public string ConfirmationButtonText { get; set; } = "OK";
+    [Parameter]
+    public MudBlazor.Color ConfirmationButtonColor { get; set; } = Color.Primary;
+
+    private void Ok() => _mudDialog.Close(DialogResult.Ok(true));
+    private void Cancel() => _mudDialog.Cancel();
+}

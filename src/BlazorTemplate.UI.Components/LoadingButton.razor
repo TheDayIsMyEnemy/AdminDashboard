@@ -1,0 +1,24 @@
+<MudButton form="@Form" StartIcon="@StartIcon" Disabled="IsLoading" Variant="Variant.Filled" ButtonType="ButtonType.Submit" Color="Color.Primary" Size="Size.Small">
+    @if (IsLoading)
+    {
+        <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+        <MudText Class="ms-2">@LoadingText</MudText>
+    }
+    else
+    {
+        <MudText>@(Text ?? "Create")</MudText>
+    }
+</MudButton>
+
+@code {
+    [Parameter]
+    public bool IsLoading { get; set; }
+    [Parameter]
+    public string? Form { get; set; }
+    [Parameter]
+    public string? Text { get; set; }
+    [Parameter]
+    public string? LoadingText { get; set; }
+    [Parameter]
+    public string? StartIcon { get; set; }
+}
