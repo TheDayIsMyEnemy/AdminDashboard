@@ -23,7 +23,7 @@ namespace BlazorTemplate.Infrastructure.Identity
         public const string DeleteAccess = "DeleteAccess";
     }
 
-    public static class RoleType
+    public static class Roles
     {
         public const string Admin = "Administrator";
 

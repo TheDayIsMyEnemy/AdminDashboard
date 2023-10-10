@@ -68,7 +68,7 @@ namespace BlazorTemplate.Server
                     policy =>
                         policy.RequireAssertion(context =>
                         {
-                            return context.User.IsInRole(RoleType.Admin)
+                            return context.User.IsInRole(Roles.Admin)
                                 || context.User.HasClaim(
                                     claim =>
                                         claim.Type == PermissionsClaimType
@@ -82,7 +82,7 @@ namespace BlazorTemplate.Server
                     policy =>
                         policy.RequireAssertion(context =>
                         {
-                            return context.User.IsInRole(RoleType.Admin)
+                            return context.User.IsInRole(Roles.Admin)
                                 || context.User.HasClaim(
                                     claim =>
                                         claim.Type == PermissionsClaimType
@@ -96,7 +96,7 @@ namespace BlazorTemplate.Server
                     policy =>
                         policy.RequireAssertion(context =>
                         {
-                            return context.User.IsInRole(RoleType.Admin)
+                            return context.User.IsInRole(Roles.Admin)
                                 || context.User.HasClaim(
                                     claim =>
                                         claim.Type == PermissionsClaimType
@@ -110,7 +110,7 @@ namespace BlazorTemplate.Server
                     policy =>
                         policy.RequireAssertion(context =>
                         {
-                            return context.User.IsInRole(RoleType.Admin)
+                            return context.User.IsInRole(Roles.Admin)
                                 || context.User.HasClaim(
                                     claim =>
                                         claim.Type == PermissionsClaimType

@@ -4,70 +4,74 @@ using BlazorTemplate.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using BlazorTemplate.Server;
 using BlazorTemplate.Infrastructure;
+using Microsoft.AspNetCore.Identity;
+using BlazorTemplate.Infrastructure.Identity;
 
-Log.Logger = new LoggerConfiguration()
-    .WriteTo.Console()
-    .CreateBootstrapLogger();
+var builder = WebApplication.CreateBuilder(args);
 
-Log.Information("Starting up!");
+builder.Host.UseSerilog((context, services, loggerConfig) =>
+    loggerConfig.ReadFrom.Configuration(context.Configuration));
 
-try
+var connectionStr = builder.Configuration.GetConnectionString("Default");
+builder.Services.AddDbContextFactory<AppDbContext>(
+    options =>
+        options
+            .UseMySql(connectionStr, ServerVersion.AutoDetect(connectionStr))
+            .LogTo(Console.WriteLine, LogLevel.Information)
+            .EnableSensitiveDataLogging()
+            .EnableDetailedErrors());
+
+builder.Services.AddSecurity();
+
+builder.Services.AddRazorPages();
+builder.Services.AddServerSideBlazor();
+builder.Services.AddMudServices();
+
+builder.Services.AddApplicationServices(builder.Configuration, builder.Environment);
+builder.Services.AddHttpClients(builder.Configuration);
+builder.Services.ConfigureOptions(builder.Configuration);
+
+var app = builder.Build();
+
+app.Logger.LogInformation("App created...");
+app.Logger.LogInformation("Seeding Database...");
+
+using (var scope = app.Services.CreateScope())
 {
-    var builder = WebApplication.CreateBuilder(args);
-
-    builder.Host.UseSerilog((context, services, loggerConfig) =>
-        loggerConfig.ReadFrom.Configuration(context.Configuration));
-
-    var connectionStr = builder.Configuration.GetConnectionString("Default");
-    builder.Services.AddDbContextFactory<AppDbContext>(
-        options =>
-            options
-                .UseMySql(connectionStr, ServerVersion.AutoDetect(connectionStr))
-                .LogTo(Console.WriteLine, LogLevel.Information)
-                .EnableSensitiveDataLogging()
-                .EnableDetailedErrors());
-
-    builder.Services.AddSecurity();
-
-    builder.Services.AddRazorPages();
-    builder.Services.AddServerSideBlazor();
-    builder.Services.AddMudServices();
-
-    builder.Services.AddApplicationServices(builder.Configuration, builder.Environment);
-    builder.Services.AddHttpClients(builder.Configuration);
-    builder.Services.ConfigureOptions(builder.Configuration);
-
-    var app = builder.Build();
-
-    if (!app.Environment.IsDevelopment())
+    var scopedProvider = scope.ServiceProvider;
+    try
     {
-        app.UseExceptionHandler("/Error");
-        app.UseHsts();
+        var appDbContext = scopedProvider.GetRequiredService<AppDbContext>();
+        await AppDbContextSeed.Seed(appDbContext, app.Logger);
+
+        var userManager = scopedProvider.GetRequiredService<UserManager<User>>();
+        var roleManager = scopedProvider.GetRequiredService<RoleManager<Role>>();
+        var appIdentityDbContext = scopedProvider.GetRequiredService<AppIdentityDbContext>();
+        await AppIdentityDbContextSeed.Seed(appIdentityDbContext, userManager, roleManager, app.Logger);
     }
-
-    app.UseHttpsRedirection();
-
-    app.UseStaticFiles();
-
-    app.UseRouting();
-
-    app.UseAuthentication();
-    app.UseAuthorization();
-
-    app.MapBlazorHub().RequireAuthorization();
-    app.MapFallbackToPage("/_Host");
-
-    await DbInitializer.Seed(app.Services);
-
-    app.Run();
-
-    Log.Information("Stopped cleanly");
+    catch (Exception ex)
+    {
+        app.Logger.LogError(ex, "An error occurred seeding the Database");
+    }
 }
-catch (Exception ex)
+
+if (!app.Environment.IsDevelopment())
 {
-    Log.Fatal(ex, "An unhandled exception occurred during bootstrapping");
+    app.UseExceptionHandler("/Error");
+    app.UseHsts();
 }
-finally
-{
-    Log.CloseAndFlush();
-}
+
+app.UseHttpsRedirection();
+
+app.UseStaticFiles();
+
+app.UseRouting();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapBlazorHub().RequireAuthorization();
+app.MapFallbackToPage("/_Host");
+
+app.Logger.LogInformation("App is starting up...");
+app.Run();
