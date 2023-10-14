@@ -12,11 +12,19 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog((context, services, loggerConfig) =>
     loggerConfig.ReadFrom.Configuration(context.Configuration));
 
-var connectionStr = builder.Configuration.GetConnectionString("Default");
+var dbConnectionString = builder.Configuration.GetConnectionString("BlazorTemplateDb");
+var identityDbConnectionString = builder.Configuration.GetConnectionString("BlazorTemplateIdentityDb");
 builder.Services.AddDbContextFactory<AppDbContext>(
     options =>
         options
-            .UseMySql(connectionStr, ServerVersion.AutoDetect(connectionStr))
+            .UseMySql(dbConnectionString, ServerVersion.AutoDetect(dbConnectionString))
+            .LogTo(Console.WriteLine, LogLevel.Information)
+            .EnableSensitiveDataLogging()
+            .EnableDetailedErrors());
+builder.Services.AddDbContextFactory<AppIdentityDbContext>(
+    options =>
+        options
+            .UseMySql(identityDbConnectionString, ServerVersion.AutoDetect(identityDbConnectionString))
             .LogTo(Console.WriteLine, LogLevel.Information)
             .EnableSensitiveDataLogging()
             .EnableDetailedErrors());

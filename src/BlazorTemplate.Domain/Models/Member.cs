@@ -8,27 +8,25 @@ namespace BlazorTemplate.Domain.Models
 #pragma warning disable CS8618
         private Member() { }
 
-        public Member(string email)
+        public Member(string identityGuid)
         {
-            Email = email;
+            IdentityGuid = identityGuid;
         }
 
         public Member(
             string firstName,
             string lastName,
-            string email,
-            Address address)
+            string identityGuid)
         {
             FirstName = firstName;
             LastName = lastName;
-            Email = email;
-            Address = address;
+            IdentityGuid = identityGuid;
         }
 
         public string FirstName { get; private set; }
         public string LastName { get; private set; }
-        public string Email { get; private set; }
-        public Address Address { get; private set; }
+        public string? IdentityGuid { get; private set; }
+        public Address? Address { get; private set; }
 
         public int? CompanyId { get; set; }
 

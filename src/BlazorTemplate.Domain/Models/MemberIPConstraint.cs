@@ -36,10 +36,4 @@ namespace BlazorTemplate.Domain.Models
 
         public int MemberId { get; private set; }
     }
-
-    public enum ConstraintType
-    {
-        Whitelist,
-        Blacklist
-    }
 }

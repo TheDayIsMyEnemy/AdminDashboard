@@ -1,0 +1,71 @@
+@using Microsoft.AspNetCore.Identity
+@using System.Collections.Generic
+@using System.Linq
+@using Microsoft.EntityFrameworkCore
+@using BlazorTemplate.Infrastructure.Identity
+
+<MudDialog ClassActions="ma-4">
+    <DialogContent>
+        <MudForm @ref="_form" Class="px-2">
+            <MudSelect T="string"
+                       Label="Select Roles"
+                       MultiSelection="SelectMultipleRoles"
+                       AnchorOrigin="Origin.BottomCenter"
+                       @bind-SelectedValues="UserRoles">
+                @foreach (var role in Roles)
+                {
+                    var disabled = (role == Roles.Admin) ? true : false;
+                    <MudSelectItem Value="@role" Disabled="@disabled" />
+                }
+            </MudSelect>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Color="Color.Transparent"
+                   Variant="Variant.Filled"
+                   Size="Size.Small"
+                   OnClick="Cancel">
+            Cancel
+        </MudButton>
+        <MudButton Color="Color.Primary"
+                   Variant="Variant.Filled"
+                   Size="Size.Small"
+                   OnClick="Assign">
+            Assign
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    private MudForm? _form = new();
+    private IEnumerable<string?> Roles = Enumerable.Empty<string>();
+
+    [Inject]
+    protected RoleManager<BlazorTemplate.Infrastructure.Identity.Role> RoleManager { get; set; } = null!;
+
+    [CascadingParameter]
+    protected MudDialogInstance MudDialog { get; set; } = null!;
+
+    [Parameter]
+    public IEnumerable<string?> UserRoles { get; set; } = null!;
+
+    [Parameter]
+    public bool SelectMultipleRoles { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var roles = await RoleManager.Roles.ToListAsync();
+        Roles = roles.Select(r => r.Name);
+    }
+
+    private async Task Assign()
+    {
+        await _form!.Validate();
+        if (_form.IsValid)
+        {
+            MudDialog.Close(DialogResult.Ok(UserRoles));
+        }
+    }
+
+    private void Cancel() => MudDialog.Cancel();
+}

@@ -25,10 +25,4 @@ namespace BlazorTemplate.Domain.Models
 
         public int MemberId { get; private set; }
     }
-
-    public enum ActivityType
-    {
-        SignIn,
-        SignOut
-    }
 }

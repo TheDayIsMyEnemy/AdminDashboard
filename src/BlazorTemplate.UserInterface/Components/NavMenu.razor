@@ -1,0 +1,21 @@
+@using Microsoft.AspNetCore.Components.Authorization
+@using MudBlazor
+@using BlazorTemplate.UserInterface
+
+<MudPaper Elevation="0">
+    <MudNavMenu Margin="Margin.Normal" Color="Color.Info">
+        <MudNavLink Href="/dashboard" Icon="@Icons.Material.Filled.Dashboard">
+            Dashboard
+        </MudNavLink>
+        <AuthorizeView Roles="@Roles.Admin">
+            <MudNavLink Href="companies" Icon="@Icons.Material.Filled.Business">
+                Companies
+            </MudNavLink>
+        </AuthorizeView>
+        <AuthorizeView Roles="@AuthorizeConstants.AdminRoles">
+            <MudNavLink Href="user-management" Icon="@Icons.Material.Filled.ManageAccounts">
+                User Management
+            </MudNavLink>
+        </AuthorizeView>
+    </MudNavMenu>
+</MudPaper>

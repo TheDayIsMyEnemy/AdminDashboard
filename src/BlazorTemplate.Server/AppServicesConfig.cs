@@ -32,7 +32,7 @@ namespace BlazorTemplate.Server
                 options.LogoutPath = new PathString(LogoutPath);
             });
 
-            services.ConfigurePolicy();
+            // services.ConfigurePolicy();
         }
 
         public static void AddApplicationServices(
@@ -57,68 +57,6 @@ namespace BlazorTemplate.Server
         )
         {
 
-        }
-
-        private static void ConfigurePolicy(this IServiceCollection services)
-        {
-            _ = services.AddAuthorization(options =>
-            {
-                options.AddPolicy(
-                    Policy.ReadAccess,
-                    policy =>
-                        policy.RequireAssertion(context =>
-                        {
-                            return context.User.IsInRole(Roles.Admin)
-                                || context.User.HasClaim(
-                                    claim =>
-                                        claim.Type == PermissionsClaimType
-                                        && claim.Value == $"{context.Resource}:{Operation.Read}"
-                                );
-                        })
-                );
-
-                options.AddPolicy(
-                    Policy.WriteAccess,
-                    policy =>
-                        policy.RequireAssertion(context =>
-                        {
-                            return context.User.IsInRole(Roles.Admin)
-                                || context.User.HasClaim(
-                                    claim =>
-                                        claim.Type == PermissionsClaimType
-                                        && claim.Value == $"{context.Resource}:{Operation.Create}"
-                                );
-                        })
-                );
-
-                options.AddPolicy(
-                    Policy.EditAccess,
-                    policy =>
-                        policy.RequireAssertion(context =>
-                        {
-                            return context.User.IsInRole(Roles.Admin)
-                                || context.User.HasClaim(
-                                    claim =>
-                                        claim.Type == PermissionsClaimType
-                                        && claim.Value == $"{context.Resource}:{Operation.Update}"
-                                );
-                        })
-                );
-
-                options.AddPolicy(
-                    Policy.DeleteAccess,
-                    policy =>
-                        policy.RequireAssertion(context =>
-                        {
-                            return context.User.IsInRole(Roles.Admin)
-                                || context.User.HasClaim(
-                                    claim =>
-                                        claim.Type == PermissionsClaimType
-                                        && claim.Value == $"{context.Resource}:{Operation.Delete}"
-                                );
-                        })
-                );
-            });
         }
     }
 }
