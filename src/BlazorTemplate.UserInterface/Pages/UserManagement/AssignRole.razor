@@ -1,69 +1,71 @@
-@using Microsoft.AspNetCore.Identity
-@using System.Collections.Generic
-@using System.Linq
-@using Microsoft.EntityFrameworkCore
-@using BlazorTemplate.Infrastructure.Identity
-
 <MudDialog ClassActions="ma-4">
     <DialogContent>
-        <MudForm @ref="_form" Class="px-2">
-            <MudSelect T="string"
-                       Label="Select Roles"
-                       MultiSelection="SelectMultipleRoles"
-                       AnchorOrigin="Origin.BottomCenter"
-                       @bind-SelectedValues="UserRoles">
-                @foreach (var role in Roles)
+        <MudForm @ref="Form" Class="px-2">
+            <MudSelect T="string" Label="Select Roles"
+                MultiSelection="SelectMultipleRoles"
+                AnchorOrigin="Origin.BottomCenter"
+                @bind-SelectedValues="UserRoles">
+                @foreach (var role in AllRoles)
                 {
-                    @* var disabled = (role == Roles.Admin) ? true : false; *@
-                    @* <MudSelectItem Value="@role" Disabled="@disabled" /> *@
+                    <MudSelectItem Value="@role" />
                 }
             </MudSelect>
         </MudForm>
     </DialogContent>
     <DialogActions>
-        <MudButton Color="Color.Transparent"
-                   Variant="Variant.Filled"
-                   Size="Size.Small"
-                   OnClick="Cancel">
+        <MudButton Color="Color.Transparent" Variant="Variant.Filled"
+            Size="Size.Small" OnClick="Cancel">
             Cancel
         </MudButton>
-        <MudButton Color="Color.Primary"
-                   Variant="Variant.Filled"
-                   Size="Size.Small"
-                   OnClick="Assign">
+        <MudButton Color="Color.Primary" Variant="Variant.Filled"
+            Size="Size.Small" OnClick="Assign">
             Assign
         </MudButton>
     </DialogActions>
 </MudDialog>
 
 @code {
-    private MudForm? _form = new();
-    private IEnumerable<string?> Roles = Enumerable.Empty<string>();
+    private MudForm? Form = new();
+    private IEnumerable<string?> AllRoles = Enumerable.Empty<string>();
+    private IEnumerable<string?> UserRoles = Enumerable.Empty<string>();
 
     [Inject]
-    protected RoleManager<BlazorTemplate.Infrastructure.Identity.Role> RoleManager { get; set; } = null!;
+    private IUserService UserService { get; set; } = null!;
 
     [CascadingParameter]
-    protected MudDialogInstance MudDialog { get; set; } = null!;
+    private MudDialogInstance MudDialog { get; set; } = null!;
+
+    [Inject]
+    protected ISnackbar Snackbar { get; set; } = null!;
 
     [Parameter]
-    public IEnumerable<string?> UserRoles { get; set; } = null!;
+    public string UserIdToAssignRoles { get; set; } = null!;
 
     [Parameter]
     public bool SelectMultipleRoles { get; set; }
 
     protected override async Task OnParametersSetAsync()
     {
-        var roles = await RoleManager.Roles.ToListAsync();
-        Roles = roles.Select(r => r.Name);
+        AllRoles = await UserService.GetAllRoles();
+        UserRoles = await UserService.GetUserRoles(UserIdToAssignRoles);
     }
 
     private async Task Assign()
     {
-        await _form!.Validate();
-        if (_form.IsValid)
+        await Form!.Validate();
+        if (Form.IsValid)
         {
-            MudDialog.Close(DialogResult.Ok(UserRoles));
+            var serviceResult = await UserService.AssignRoles(UserIdToAssignRoles, UserRoles!);
+
+            if (serviceResult.IsSuccess)
+            {
+                MudDialog.Close(DialogResult.Ok(UserRoles));
+                Snackbar.Add("User roles updated successfully", Severity.Success);
+            }
+            else
+            {
+                Snackbar.Add(serviceResult.ToString(), Severity.Error);
+            }
         }
     }
 

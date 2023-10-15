@@ -1,7 +1,9 @@
+using System.Security.Claims;
 using BlazorTemplate.Application.Interfaces;
 using BlazorTemplate.Domain.Common;
 using BlazorTemplate.Domain.Constants;
 using BlazorTemplate.Domain.Entities;
+using BlazorTemplate.Domain.Extensions;
 using BlazorTemplate.Infrastructure.Data;
 using BlazorTemplate.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
@@ -15,29 +17,33 @@ namespace BlazorTemplate.Application.Services
         private readonly IDbContextFactory<AppDbContext> _appDbContextFactory;
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<Role> _roleManager;
+        private readonly IAuthenticationService _authenticationService;
         private readonly ILogger<UserService> _logger;
 
         public UserService(
             IDbContextFactory<AppDbContext> appDbContextFactory,
             UserManager<User> userManager,
             RoleManager<Role> roleManager,
+            IAuthenticationService authenticationService,
             ILogger<UserService> logger)
         {
             _appDbContextFactory = appDbContextFactory;
             _userManager = userManager;
             _roleManager = roleManager;
+            _authenticationService = authenticationService;
             _logger = logger;
         }
 
-        public async Task<ServiceResult> DeleteUser(
-            string currentUserId,
-            string userIdToDelete)
+        public async Task<ServiceResult> DeleteUser(string userId)
         {
-            var currentUser = await _userManager.FindByIdAsync(currentUserId);
+            var currentUser = await GetCurrentUser();
             if (currentUser == null)
                 throw new ArgumentNullException("Current user not found");
 
-            var userToDelete = await _userManager.FindByIdAsync(userIdToDelete);
+            if (currentUser.Id.Equals(userId))
+                throw new ArgumentException("Invalid delete action");
+
+            var userToDelete = await _userManager.FindByIdAsync(userId);
             if (userToDelete == null)
                 throw new ArgumentNullException("User to delete not found");
 
@@ -45,10 +51,10 @@ namespace BlazorTemplate.Application.Services
             var isCurrentUserSuperAdmin = currentUserRoles.Any(r => r.Equals(Roles.SuperAdmin));
             var isCurrentUserAdmin = currentUserRoles.Any(r => r.Equals(Roles.Admin));
             if (!isCurrentUserSuperAdmin && !isCurrentUserAdmin)
-                return ServiceResult.Error("Current user has no permissions");
+                return ServiceResult.Error("You do not have permission to perform this action.");
 
             var userToDeleteRoles = await _userManager.GetRolesAsync(userToDelete);
-            var isUserToDeleteSuperAdmin = currentUserRoles.Any(r => r.Equals(Roles.SuperAdmin));
+            var isUserToDeleteSuperAdmin = userToDeleteRoles.Any(r => r.Equals(Roles.SuperAdmin));
             var isUserToDeleteAdmin = currentUserRoles.Any(r => r.Equals(Roles.Admin));
             if (isUserToDeleteSuperAdmin)
                 return ServiceResult.Error($"{Roles.SuperAdmin} cannot be deleted");
@@ -56,11 +62,11 @@ namespace BlazorTemplate.Application.Services
                 throw new InvalidOperationException($"Only {Roles.SuperAdmin} can perform this action");
 
             using var appDbContext = _appDbContextFactory.CreateDbContext();
-            var member = await appDbContext.Members.FirstOrDefaultAsync(m => m.IdentityGuid == currentUserId);
+            var member = await appDbContext.Members.FirstOrDefaultAsync(m => m.IdentityGuid == userToDelete.Id);
             if (member == null)
                 throw new ArgumentNullException("Member not found");
 
-            var identityResult = await _userManager.DeleteAsync(currentUser);
+            var identityResult = await _userManager.DeleteAsync(userToDelete);
             if (!identityResult.Succeeded)
                 return ServiceResult.Error(identityResult.Errors.Select(e => e.Description).ToArray());
 
@@ -100,15 +106,14 @@ namespace BlazorTemplate.Application.Services
             => await _userManager.Users.ToListAsync();
 
         public async Task<ServiceResult> AssignRoles(
-            string currentUserId,
-            string userIdToAssignRoles,
+            string userId,
             IEnumerable<string> newRoles)
         {
-            var currentUser = await _userManager.FindByIdAsync(currentUserId);
+            var currentUser = await GetCurrentUser();
             if (currentUser == null)
                 throw new ArgumentNullException("Current user not found");
 
-            var userToModify = await _userManager.FindByIdAsync(userIdToAssignRoles);
+            var userToModify = await _userManager.FindByIdAsync(userId);
             if (userToModify == null)
                 throw new ArgumentNullException("User to assign roles not found");
 
@@ -116,12 +121,12 @@ namespace BlazorTemplate.Application.Services
             var isCurrentUserSuperAdmin = currentUserRoles.Any(r => r.Equals(Roles.SuperAdmin));
             var isCurrentUserAdmin = currentUserRoles.Any(r => r.Equals(Roles.Admin));
 
-            if (!isCurrentUserAdmin && !isCurrentUserAdmin)
+            if (!isCurrentUserSuperAdmin && !isCurrentUserAdmin)
                 return ServiceResult.Error("Only admin users can assign roles");
 
             var userToModifyRoles = await _userManager.GetRolesAsync(userToModify);
-            var isUserToModifySuperAdmin = currentUserRoles.Any(r => r.Equals(Roles.SuperAdmin));
-            var isUserToModifyAdmin = currentUserRoles.Any(r => r.Equals(Roles.Admin));
+            var isUserToModifySuperAdmin = userToModifyRoles.Any(r => r.Equals(Roles.SuperAdmin));
+            var isUserToModifyAdmin = userToModifyRoles.Any(r => r.Equals(Roles.Admin));
 
             if (isUserToModifySuperAdmin || (isCurrentUserAdmin && isUserToModifyAdmin))
                 return ServiceResult.Error("No permission to perform this action.");
@@ -158,6 +163,35 @@ namespace BlazorTemplate.Application.Services
 
             var roles = await _userManager.GetRolesAsync(user);
             return roles;
+        }
+
+        public async Task<IEnumerable<string>> GetAllRoles()
+        {
+            var roles = await _roleManager.Roles.ToListAsync();
+            return roles.Select(r => r.Name)!;
+        }
+
+        public async Task<ServiceResult> SetUserAccountStatus(
+            string userId,
+            UserAccountStatus accountStatus)
+        {
+            var user = GetCurrentUser();
+            if (user == null)
+                throw new ArgumentNullException("Current user not found");
+
+            if (user.Id!.Equals(userId))
+                throw new ArgumentException("No permission");
+
+            return ServiceResult.Success;
+        }
+
+        private async Task<User?> GetCurrentUser()
+        {
+            var claimsPrincipal = await _authenticationService.GetUser();
+            if (claimsPrincipal == null)
+                return null;
+
+            return await _userManager.FindByIdAsync(claimsPrincipal.GetId()!);
         }
     }
 }

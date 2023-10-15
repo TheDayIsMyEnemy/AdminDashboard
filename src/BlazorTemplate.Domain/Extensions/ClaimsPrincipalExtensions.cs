@@ -12,5 +12,8 @@ namespace BlazorTemplate.Domain.Extensions
 
         public static string? GetRole(this ClaimsPrincipal claimsPrincipal) =>
             claimsPrincipal?.FindFirst(ClaimTypes.Role)?.Value;
+
+        public static IEnumerable<string> GetAllRoles(this ClaimsPrincipal claimsPrincipal) =>
+            claimsPrincipal?.FindAll(ClaimTypes.Role)?.Select(r => r.Value) ?? Enumerable.Empty<string>();
     }
 }

@@ -39,8 +39,9 @@
             </MudTableSortLabel>
         </MudTh>
         <MudTh>
-            <MudTableSortLabel SortBy="new Func<User, object>(x=>x.IsDisabled)">
-                Status
+            <MudTableSortLabel
+                SortBy="new Func<User, object>(x=>x?.AccountStatus!)">
+                    Account Status
             </MudTableSortLabel>
         </MudTh>
         <MudTh>Actions</MudTh>
@@ -49,21 +50,20 @@
         <MudTd DataLabel="Email">@context.Email</MudTd>
         <MudTd DataLabel="PhoneNumber">@context.PhoneNumber</MudTd>
         <MudTd DataLabel="LockoutEnd">@context.LockoutEnd?.ToLocalTime()</MudTd>
-            <MudTd DataLabel="Status">@(context.IsDisabled ? "Disabled" : "Enabled")
-            </MudTd>
+        <MudTd DataLabel="Account Status">@context.AccountStatus.ToString()</MudTd>
         <MudTd DataLabel="Actions">
             <MudMenu Icon="@Icons.Material.Filled.MoreHoriz" Dense="true" ListClass="list-item">
                 <MudMenuItem Icon="@Icons.Material.Filled.AssignmentInd"
                              IconSize="Size.Small"
-                             OnClick="(e) => AssignRoles(context)">
+                             OnClick="(e) => AssignRoles(context.Id)">
                     Assign Roles
                 </MudMenuItem>
                 @if (CurrentUserId != context.Id)
                 {
                     <MudMenuItem Icon="@Icons.Material.Filled.Block"
                              IconSize="Size.Small"
-                             OnClick="(e) => EnableOrDisableUserAccount(context)">
-                        @(context.IsDisabled ? "Enable Account" : "Disable Account")
+                             OnClick="(e) => SetAccountStatus(context)">
+                        @(context.AccountStatus == UserAccountStatus.Disabled ? "Enable Account" : "Disable Account")
                     </MudMenuItem>
                     <MudMenuItem Icon="@Icons.Material.Filled.LockReset"
                              IconSize="Size.Small"

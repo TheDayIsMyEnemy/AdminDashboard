@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlazorTemplate.Infrastructure.Identity.Migrations
 {
     [DbContext(typeof(AppIdentityDbContext))]
-    [Migration("20231015101235_InitialIdentityModel")]
+    [Migration("20231015155125_InitialIdentityModel")]
     partial class InitialIdentityModel
     {
         /// <inheritdoc />
@@ -56,6 +56,9 @@ namespace BlazorTemplate.Infrastructure.Identity.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
+                    b.Property<int>("AccountStatus")
+                        .HasColumnType("int");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("longtext");
@@ -65,9 +68,6 @@ namespace BlazorTemplate.Infrastructure.Identity.Migrations
                         .HasColumnType("varchar(50)");
 
                     b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<bool>("IsDisabled")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<bool>("LockoutEnabled")

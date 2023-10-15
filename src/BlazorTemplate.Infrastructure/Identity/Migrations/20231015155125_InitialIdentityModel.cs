@@ -40,7 +40,7 @@ namespace BlazorTemplate.Infrastructure.Identity.Migrations
                 {
                     Id = table.Column<string>(type: "varchar(255)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    IsDisabled = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    AccountStatus = table.Column<int>(type: "int", nullable: false),
                     UserName = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     NormalizedUserName = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true)

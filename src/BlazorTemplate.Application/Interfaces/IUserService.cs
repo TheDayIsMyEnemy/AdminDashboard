@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using BlazorTemplate.Domain.Common;
 using BlazorTemplate.Infrastructure.Identity;
 
@@ -14,15 +15,16 @@ namespace BlazorTemplate.Application.Interfaces
             string firstName,
             string lastName);
 
-        Task<ServiceResult> DeleteUser(
-            string currentUserId,
-            string userIdToDelete);
+        Task<ServiceResult> DeleteUser(string userId);
 
         Task<ServiceResult> AssignRoles(
-            string currentUserId,
-            string userIdToAssignRoles,
-            IEnumerable<string> roles);
+            string userId,
+            IEnumerable<string> newRoles);
 
         Task<IEnumerable<string>> GetUserRoles(string userId);
+
+        Task<IEnumerable<string>> GetAllRoles();
+
+        Task<ServiceResult> SetUserAccountStatus(string userId, UserAccountStatus accountStatus);
     }
 }

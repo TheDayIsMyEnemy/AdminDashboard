@@ -53,6 +53,9 @@ namespace BlazorTemplate.Infrastructure.Identity.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
+                    b.Property<int>("AccountStatus")
+                        .HasColumnType("int");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("longtext");
@@ -62,9 +65,6 @@ namespace BlazorTemplate.Infrastructure.Identity.Migrations
                         .HasColumnType("varchar(50)");
 
                     b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<bool>("IsDisabled")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<bool>("LockoutEnabled")

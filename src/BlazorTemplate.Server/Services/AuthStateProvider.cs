@@ -1,3 +1,5 @@
+using BlazorTemplate.Application.Interfaces;
+using BlazorTemplate.Domain.Extensions;
 using BlazorTemplate.Infrastructure.Identity;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -8,25 +10,32 @@ using System.Security.Claims;
 
 namespace BlazorTemplate.Server.Services
 {
-    public class AuthStateProvider : RevalidatingServerAuthenticationStateProvider
+    public class AuthStateProvider :
+        RevalidatingServerAuthenticationStateProvider
     {
         private readonly IServiceScopeFactory _scopeFactory;
         private readonly IdentityOptions _options;
-        private readonly NavigationManager _nav;
+        // private readonly NavigationManager _nav;
+        // private readonly IUserService _userService;
 
         public AuthStateProvider(
             ILoggerFactory loggerFactory,
             IServiceScopeFactory scopeFactory,
-            IOptions<IdentityOptions> optionsAccessor,
-            NavigationManager nav)
+            IOptions<IdentityOptions> optionsAccessor)
             : base(loggerFactory)
         {
             _scopeFactory = scopeFactory;
             _options = optionsAccessor.Value;
-            _nav = nav;
+            // _nav = nav;
         }
 
-        protected override TimeSpan RevalidationInterval => TimeSpan.FromHours(1);
+        protected override TimeSpan RevalidationInterval => TimeSpan.FromMinutes(1);
+
+        public async Task<ClaimsPrincipal> GetAuthenticationState()
+        {
+            var authState = await base.GetAuthenticationStateAsync();
+            return authState.User;
+        }
 
         protected override async Task<bool> ValidateAuthenticationStateAsync(
             AuthenticationState authenticationState, CancellationToken cancellationToken)
@@ -37,6 +46,7 @@ namespace BlazorTemplate.Server.Services
             {
                 var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
                 var isValid = await ValidateSecurityStampAsync(userManager, authenticationState.User);
+
                 return isValid;
             }
             finally
@@ -55,9 +65,9 @@ namespace BlazorTemplate.Server.Services
         private async Task<bool> ValidateSecurityStampAsync(UserManager<User> userManager, ClaimsPrincipal principal)
         {
             var user = await userManager.GetUserAsync(principal);
-            if (user == null || !user.IsDisabled)
+            if (user == null || user.AccountStatus == UserAccountStatus.Disabled)
             {
-                _nav.NavigateTo(Constants.LogoutPath, true);
+                // _nav.NavigateTo(Constants.LogoutPath, true);
                 return false;
             }
             else if (!userManager.SupportsUserSecurityStamp)
@@ -67,7 +77,7 @@ namespace BlazorTemplate.Server.Services
             else
             {
                 var principalStamp = principal.FindFirstValue(_options.ClaimsIdentity.SecurityStampClaimType);
-                var userStamp = await userManager.GetSecurityStampAsync(user);
+                var userStamp = await userManager.GetSecurityStampAsync(user!);
                 return principalStamp == userStamp;
             }
         }

@@ -50,20 +50,21 @@ namespace BlazorTemplate.UserInterface.Pages.UserManagement
             return false;
         }
 
-        protected async Task AssignRoles(User user)
+        public async Task AssignRoles(string userIdToAssignRoles)
         {
-            // var parameters = new DialogParameters
-            // {
-            //     { "UserRoles", currentRoles },
-            //     { "SelectMultipleRoles", true }
-            // };
+            var parameters = new DialogParameters
+            {
+                { "UserIdToAssignRoles", userIdToAssignRoles },
+                { "SelectMultipleRoles", true }
+            };
 
-            // var dialogResult = await DialogService.Show<AssignRole>("Assign Roles", parameters).Result;
+            var dialogResult = await DialogService.Show<AssignRole>("Assign Roles", parameters).Result;
 
-            // if (!dialogResult.Canceled)
-            // {
-
-            // }
+            if (!dialogResult.Canceled)
+            {
+                await LoadUsers();
+                StateHasChanged();
+            }
         }
 
         public async Task OpenCreateUserDialog()
@@ -76,7 +77,7 @@ namespace BlazorTemplate.UserInterface.Pages.UserManagement
             }
         }
 
-        protected async Task EnableOrDisableUserAccount(User user)
+        protected async Task SetAccountStatus(User user)
         {
             // var userRoles = await UserManager.GetRolesAsync(user);
             // if (userRoles.Any(r => r == Roles.Admin))
@@ -163,19 +164,19 @@ namespace BlazorTemplate.UserInterface.Pages.UserManagement
                 { "ConfirmationButtonColor", Color.Error },
             };
 
-            var result = await DialogService.Show<ConfirmationModal>("", parameters).Result;
+            var dialogResult = await DialogService.Show<ConfirmationModal>("", parameters).Result;
 
-            if (!result.Canceled)
+            if (!dialogResult.Canceled)
             {
-                var deleteUserResult = await UserService.DeleteUser(CurrentUserId, user.Id);
-                if (deleteUserResult.IsSuccess)
+                var serviceResult = await UserService.DeleteUser(user.Id);
+                if (serviceResult.IsSuccess)
                 {
                     Snackbar.Add(string.Format(CultureInfo.CurrentCulture, ResultMessages.Deleted, user.Email), Severity.Success);
                     await LoadUsers();
                 }
                 else
                 {
-                    Snackbar.Add(result.ToString(), Severity.Error);
+                    Snackbar.Add(serviceResult.ToString(), Severity.Error);
                 }
             }
         }

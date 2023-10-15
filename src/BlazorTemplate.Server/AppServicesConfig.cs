@@ -6,6 +6,11 @@ using BlazorTemplate.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using static BlazorTemplate.Infrastructure.Identity.Constants;
+using Microsoft.AspNetCore.Components.Server.Circuits;
+using BlazorTemplate.Server.Services;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.Server;
 
 namespace BlazorTemplate.Server
 {
@@ -44,6 +49,8 @@ namespace BlazorTemplate.Server
             IWebHostEnvironment environment
         )
         {
+            services.AddScoped<AuthenticationStateProvider, AuthStateProvider>();
+            services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped<IUserService, UserService>();
         }
 
