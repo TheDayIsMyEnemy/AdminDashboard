@@ -1,5 +1,4 @@
 @inherits LayoutComponentBase
-@using BlazorTemplate.UserInterface.Theme
 
 <MudThemeProvider Theme="@DefaultTheme"
                   @ref="@MudThemeProvider"
@@ -22,13 +21,11 @@
 
         <MudSpacer />
 
-        <CultureSelector />
+        @* <CultureSelector /> *@
 
         <MudIconButton Icon="@(IsDarkMode ? @Icons.Material.Filled.WbSunny : @Icons.Material.Filled.Brightness4)"
                        Color="Color.Inherit"
                        OnClick="DarkModeToggle" />
-        <MudIconButton Icon="@Icons.Material.Filled.ShoppingCart"
-                       Color="Color.Inherit" />
         <ProfileMenu />
     </MudAppBar>
     <MudDrawer @bind-Open="IsDrawerOpened" Elevation="1" ClipMode="DrawerClipMode.Never">

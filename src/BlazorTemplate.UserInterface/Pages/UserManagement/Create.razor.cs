@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using BlazorTemplate.Application.Interfaces;
+using BlazorTemplate.UserInterface.Constants;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using MudBlazor;

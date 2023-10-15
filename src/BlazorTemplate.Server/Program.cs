@@ -1,10 +1,10 @@
-using MudBlazor.Services;
 using Serilog;
-using BlazorTemplate.Infrastructure.Data;
+using MudBlazor.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using BlazorTemplate.Server;
 using BlazorTemplate.Infrastructure;
-using Microsoft.AspNetCore.Identity;
+using BlazorTemplate.Infrastructure.Data;
 using BlazorTemplate.Infrastructure.Identity;
 
 var builder = WebApplication.CreateBuilder(args);

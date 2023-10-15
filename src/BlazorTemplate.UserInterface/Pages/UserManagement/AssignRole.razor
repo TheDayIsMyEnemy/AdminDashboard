@@ -14,8 +14,8 @@
                        @bind-SelectedValues="UserRoles">
                 @foreach (var role in Roles)
                 {
-                    var disabled = (role == Roles.Admin) ? true : false;
-                    <MudSelectItem Value="@role" Disabled="@disabled" />
+                    @* var disabled = (role == Roles.Admin) ? true : false; *@
+                    @* <MudSelectItem Value="@role" Disabled="@disabled" /> *@
                 }
             </MudSelect>
         </MudForm>

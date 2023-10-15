@@ -89,16 +89,8 @@ namespace BlazorTemplate.Server.Pages.Account
 
                 if (result.Succeeded)
                 {
-                    var user = await _userManager.FindByEmailAsync(Input.Email);
-
-                    user.IpAddress = HttpContext.GetRemoteIpAddress();
-                    user.UserAgent = HttpContext.GetUserAgent();
-                    user.LastLoginDate = DateTime.UtcNow;
-
-                    await _userManager.UpdateAsync(user);
-
                     _logger.LogInformation("{Email} logged in.", Input.Email);
-                    return LocalRedirect("/search");
+                    return LocalRedirect("/dashboard");
                 }
                 if (result.IsNotAllowed)
                 {

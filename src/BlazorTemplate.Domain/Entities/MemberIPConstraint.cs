@@ -1,4 +1,4 @@
-namespace BlazorTemplate.Domain.Models
+namespace BlazorTemplate.Domain.Entities
 {
     public class MemberIPConstraint : BaseEntity
     {

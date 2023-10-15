@@ -1,15 +1,12 @@
-using System.Globalization;
-using BlazorTemplate.Domain;
-using BlazorTemplate.Domain.Extensions;
-using BlazorTemplate.Infrastructure;
-using BlazorTemplate.Infrastructure.Identity;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using MudBlazor;
-using BlazorTemplate.UserInterface.Components;
+using System.Globalization;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using BlazorTemplate.Application.Interfaces;
+using BlazorTemplate.Domain.Extensions;
+using BlazorTemplate.Infrastructure.Identity;
+using BlazorTemplate.UserInterface.Constants;
+using BlazorTemplate.UserInterface.Components;
 
 namespace BlazorTemplate.UserInterface.Pages.UserManagement
 {
@@ -18,13 +15,10 @@ namespace BlazorTemplate.UserInterface.Pages.UserManagement
         protected bool IsLoading { get; set; }
         protected string? SearchQuery { get; set; }
         protected string CurrentUserId { get; set; } = null!;
-        protected List<User> Users { get; set; } = new();
+        protected IEnumerable<User> Users { get; set; } = Enumerable.Empty<User>();
 
         [Inject]
         protected IUserService UserService { get; set; } = null!;
-
-        [Inject]
-        protected UserManager<User> UserManager { get; set; } = null!;
 
         [Inject]
         protected ISnackbar Snackbar { get; set; } = null!;
@@ -38,13 +32,9 @@ namespace BlazorTemplate.UserInterface.Pages.UserManagement
         private async Task LoadUsers()
         {
             IsLoading = true;
-
-            Users = await UserManager.Users.ToListAsync();
-
+            Users = await UserService.GetAllUsers();
             var authState = await AuthStateTask;
             CurrentUserId = authState.User.GetId()!;
-
-
             IsLoading = false;
         }
 
@@ -62,77 +52,18 @@ namespace BlazorTemplate.UserInterface.Pages.UserManagement
 
         protected async Task AssignRoles(User user)
         {
-            // var authState = await AuthStateTask;
-            // var currentUser = await UserManager.GetUserAsync(authState.User);
-            // var currentUserRoles = await UserManager.GetRolesAsync(currentUser!);
-            // if (!currentUserRoles.Any(r => r == Roles.SuperAdmin))
+            // var parameters = new DialogParameters
             // {
-            //     Snackbar.Add(
-            //         "You cannot modify roles for this user",
-            //         Severity.Warning
-            //     );
+            //     { "UserRoles", currentRoles },
+            //     { "SelectMultipleRoles", true }
+            // };
+
+            // var dialogResult = await DialogService.Show<AssignRole>("Assign Roles", parameters).Result;
+
+            // if (!dialogResult.Canceled)
+            // {
+
             // }
-
-            var currentRoles = await UserManager.GetRolesAsync(user);
-            // if (currentRoles.Any(r => r == Roles.SuperAdmin || r == Roles.Admin)) { }
-
-            var parameters = new DialogParameters
-            {
-                { "UserRoles", currentRoles },
-                { "SelectMultipleRoles", true }
-            };
-
-            var result = await DialogService.Show<AssignRole>("Assign Roles", parameters).Result;
-
-            if (!result.Canceled)
-            {
-                IdentityResult? identityResult = null;
-                var newRoles = (IEnumerable<string>)result.Data;
-                var rolesToAdd = newRoles.Except(currentRoles).ToList();
-                var rolesToRemove = currentRoles.Except(newRoles).ToList();
-
-                if (rolesToRemove.Any())
-                {
-                    identityResult = await UserManager.RemoveFromRolesAsync(user, rolesToRemove);
-                    if (!identityResult.Succeeded)
-                    {
-                        Snackbar.Add(
-                            string.Join(
-                                Environment.NewLine,
-                                identityResult.Errors.Select(e => e.Description)
-                            ),
-                            Severity.Error
-                        );
-                        return;
-                    }
-                }
-                if (rolesToAdd.Any())
-                {
-                    identityResult = await UserManager.AddToRolesAsync(user, rolesToAdd);
-                    if (!identityResult.Succeeded)
-                    {
-                        Snackbar.Add(
-                            string.Join(
-                                Environment.NewLine,
-                                identityResult.Errors.Select(e => e.Description)
-                            ),
-                            Severity.Error
-                        );
-                        return;
-                    }
-                }
-                if (identityResult != null)
-                {
-                    Snackbar.Add(
-                        string.Format(
-                            CultureInfo.CurrentCulture,
-                            ResultMessages.Updated,
-                            user.Email
-                        ),
-                        Severity.Success
-                    );
-                }
-            }
         }
 
         public async Task OpenCreateUserDialog()
@@ -147,88 +78,81 @@ namespace BlazorTemplate.UserInterface.Pages.UserManagement
 
         protected async Task EnableOrDisableUserAccount(User user)
         {
-            var userRoles = await UserManager.GetRolesAsync(user);
-            if (userRoles.Any(r => r == Roles.Admin))
-            {
-                Snackbar.Add(ResultMessages.NoPermissionToPerformThisAction, Severity.Warning);
-                return;
-            }
+            // var userRoles = await UserManager.GetRolesAsync(user);
+            // if (userRoles.Any(r => r == Roles.Admin))
+            // {
+            //     Snackbar.Add(ResultMessages.NoPermissionToPerformThisAction, Severity.Warning);
+            //     return;
+            // }
 
-            var action = user.IsDisabled ? "Enable" : "Disable";
+            // var action = user.IsDisabled ? "Enable" : "Disable";
 
-            user.IsDisabled = !user.IsDisabled;
-            var identityResult = await UserManager.UpdateAsync(user);
+            // user.IsDisabled = !user.IsDisabled;
+            // var identityResult = await UserManager.UpdateAsync(user);
 
-            if (identityResult.Succeeded)
-            {
-                Snackbar.Add($"User account {user.Email} has been {action}d.", Severity.Success);
-            }
-            else
-            {
-                Snackbar.Add(
-                    string.Join(
-                        Environment.NewLine,
-                        identityResult.Errors.Select(e => e.Description)
-                    ),
-                    Severity.Error
-                );
-            }
+            // if (identityResult.Succeeded)
+            // {
+            //     Snackbar.Add($"User account {user.Email} has been {action}d.", Severity.Success);
+            // }
+            // else
+            // {
+            //     Snackbar.Add(
+            //         string.Join(
+            //             Environment.NewLine,
+            //             identityResult.Errors.Select(e => e.Description)
+            //         ),
+            //         Severity.Error
+            //     );
+            // }
         }
 
         protected async Task ResetAccountLockout(User user)
         {
-            var parameters = new DialogParameters
-            {
-                { "Title", "Reset account lockout" },
-                { "TitleIcon", Icons.Material.Filled.LockReset },
-                { "TitleIconColor", Color.Warning },
-                {
-                    "Content",
-                    $"Are you sure you want to reset account lockout for \"{user.Email}\"?"
-                },
-                { "ConfirmationButtonText", "Reset" }
-            };
+            // var parameters = new DialogParameters
+            // {
+            //     { "Title", "Reset account lockout" },
+            //     { "TitleIcon", Icons.Material.Filled.LockReset },
+            //     { "TitleIconColor", Color.Warning },
+            //     {
+            //         "Content",
+            //         $"Are you sure you want to reset account lockout for \"{user.Email}\"?"
+            //     },
+            //     { "ConfirmationButtonText", "Reset" }
+            // };
 
-            var result = await DialogService.Show<ConfirmationModal>("", parameters).Result;
+            // var result = await DialogService.Show<ConfirmationModal>("", parameters).Result;
 
-            if (!result.Canceled)
-            {
-                user.LockoutEnd = null;
-                var identityResult = await UserManager.UpdateAsync(user);
+            // if (!result.Canceled)
+            // {
+            //     user.LockoutEnd = null;
+            //     var identityResult = await UserManager.UpdateAsync(user);
 
-                if (identityResult.Succeeded)
-                {
-                    Snackbar.Add(
-                        string.Format(
-                            CultureInfo.CurrentCulture,
-                            ResultMessages.Updated,
-                            user.Email
-                        ),
-                        Severity.Success
-                    );
-                }
-                else
-                {
-                    Snackbar.Add(
-                        string.Join(
-                            Environment.NewLine,
-                            identityResult.Errors.Select(e => e.Description)
-                        ),
-                        Severity.Error
-                    );
-                }
-            }
+            //     if (identityResult.Succeeded)
+            //     {
+            //         Snackbar.Add(
+            //             string.Format(
+            //                 CultureInfo.CurrentCulture,
+            //                 ResultMessages.Updated,
+            //                 user.Email
+            //             ),
+            //             Severity.Success
+            //         );
+            //     }
+            //     else
+            //     {
+            //         Snackbar.Add(
+            //             string.Join(
+            //                 Environment.NewLine,
+            //                 identityResult.Errors.Select(e => e.Description)
+            //             ),
+            //             Severity.Error
+            //         );
+            //     }
+            // }
         }
 
         protected async Task DeleteUser(User user)
         {
-            var userRoles = await UserManager.GetRolesAsync(user);
-            if (userRoles.Any(r => r == Roles.Admin))
-            {
-                Snackbar.Add(ResultMessages.NoPermissionToPerformThisAction, Severity.Warning);
-                return;
-            }
-
             var parameters = new DialogParameters
             {
                 { "Title", "Delete user" },
@@ -243,29 +167,15 @@ namespace BlazorTemplate.UserInterface.Pages.UserManagement
 
             if (!result.Canceled)
             {
-                var identityResult = await UserManager.DeleteAsync(user);
-                if (identityResult.Succeeded)
+                var deleteUserResult = await UserService.DeleteUser(CurrentUserId, user.Id);
+                if (deleteUserResult.IsSuccess)
                 {
-                    Users.Remove(user);
-
-                    Snackbar.Add(
-                        string.Format(
-                            CultureInfo.CurrentCulture,
-                            ResultMessages.Deleted,
-                            user.Email
-                        ),
-                        Severity.Success
-                    );
+                    Snackbar.Add(string.Format(CultureInfo.CurrentCulture, ResultMessages.Deleted, user.Email), Severity.Success);
+                    await LoadUsers();
                 }
                 else
                 {
-                    Snackbar.Add(
-                        string.Join(
-                            Environment.NewLine,
-                            identityResult.Errors.Select(e => e.Description)
-                        ),
-                        Severity.Error
-                    );
+                    Snackbar.Add(result.ToString(), Severity.Error);
                 }
             }
         }

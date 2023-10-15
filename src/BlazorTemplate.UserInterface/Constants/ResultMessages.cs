@@ -1,12 +1,5 @@
-using BlazorTemplate.Domain;
-
-namespace BlazorTemplate.UserInterface
+namespace BlazorTemplate.UserInterface.Constants
 {
-    public static class AuthorizeConstants
-    {
-        public static readonly string AdminRoles = $"{Roles.SuperAdmin}, {Roles.Admin}";
-    }
-
     public static class ResultMessages
     {
         public const string Created = "{0} has been created successfully.";

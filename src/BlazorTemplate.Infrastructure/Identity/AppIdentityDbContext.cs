@@ -5,8 +5,7 @@ using Microsoft.EntityFrameworkCore;
 namespace BlazorTemplate.Infrastructure.Identity
 {
     public class AppIdentityDbContext
-        : IdentityDbContext<
-            User,
+        : IdentityDbContext<User,
             Role,
             string,
             IdentityUserClaim<string>,
@@ -15,6 +14,10 @@ namespace BlazorTemplate.Infrastructure.Identity
             IdentityRoleClaim<string>,
             IdentityUserToken<string>>
     {
+#pragma warning disable CS8618
+        public AppIdentityDbContext(DbContextOptions<AppIdentityDbContext> options)
+            : base(options) { }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);

@@ -1,6 +1,9 @@
 using System.Net;
+using BlazorTemplate.Application.Services;
+using BlazorTemplate.Application.Interfaces;
 using BlazorTemplate.Infrastructure.Data;
 using BlazorTemplate.Infrastructure.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using static BlazorTemplate.Infrastructure.Identity.Constants;
 
@@ -20,7 +23,7 @@ namespace BlazorTemplate.Server
                     options.Lockout.MaxFailedAccessAttempts = 3;
                     //options.User.AllowedUserNameCharacters = null;
                 })
-                .AddEntityFrameworkStores<AppDbContext>()
+                .AddEntityFrameworkStores<AppIdentityDbContext>()
                 .AddUserConfirmation<UserConfirmation>();
 
             services.ConfigureApplicationCookie(options =>
@@ -41,7 +44,7 @@ namespace BlazorTemplate.Server
             IWebHostEnvironment environment
         )
         {
-
+            services.AddScoped<IUserService, UserService>();
         }
 
         public static void AddHttpClients(

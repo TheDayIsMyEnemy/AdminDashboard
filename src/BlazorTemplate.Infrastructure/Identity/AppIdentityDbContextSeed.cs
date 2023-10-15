@@ -1,7 +1,7 @@
-using BlazorTemplate.Domain;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using BlazorTemplate.Domain.Constants;
 
 namespace BlazorTemplate.Infrastructure.Identity
 {
@@ -22,7 +22,6 @@ namespace BlazorTemplate.Infrastructure.Identity
                 foreach (var roleName in Roles.List)
                 {
                     await roleManager.CreateAsync(new Role(roleName));
-                    await appIdentityDbContext.SaveChangesAsync();
                 }
                 logger.LogInformation("Roles created");
             }
@@ -30,12 +29,11 @@ namespace BlazorTemplate.Infrastructure.Identity
             if (!userManager.Users.Any())
             {
                 await CreateUser(
-                    "admin@blazortemplate.org",
+                    "admin@blazor.template",
                     "Password11!",
-                    Roles.Admin,
+                    Roles.SuperAdmin,
                     userManager
                 );
-                await appIdentityDbContext.SaveChangesAsync();
                 logger.LogInformation("Users created");
             }
         }

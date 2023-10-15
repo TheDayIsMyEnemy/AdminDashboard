@@ -1,4 +1,4 @@
-using BlazorTemplate.Domain.Models;
+using BlazorTemplate.Domain.Common;
 using BlazorTemplate.Infrastructure.Identity;
 
 namespace BlazorTemplate.Application.Interfaces
@@ -17,5 +17,12 @@ namespace BlazorTemplate.Application.Interfaces
         Task<ServiceResult> DeleteUser(
             string currentUserId,
             string userIdToDelete);
+
+        Task<ServiceResult> AssignRoles(
+            string currentUserId,
+            string userIdToAssignRoles,
+            IEnumerable<string> roles);
+
+        Task<IEnumerable<string>> GetUserRoles(string userId);
     }
 }
