@@ -1,0 +1,41 @@
+name: Configure New Repository
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  configure:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Get repository name
+        id: get_repo_name
+        run: echo "::set-output name=name::${{ github.event.repository.name }}"
+
+      - name: Rename folders and namespaces
+        run: |
+          repo_name=${{ steps.get_repo_name.outputs.name }}
+          find . -type f -name '*.cs' -exec sed -i "s/BlazorTemplate/$repo_name/g" {} \;
+          find . -type d -name 'BlazorTemplate*' -exec rename 's/BlazorTemplate/$repo_name/' {} \;
+
+      - name: Commit changes
+        run: |
+          git config --global user.email "tthedayismyenemy@gmail.com"
+          git config --global user.name "TheDayIsMyEnemy"
+          git add .
+          git commit -m "Configure New Repository"
+          git push
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          title: "Configure New Repository"
+          body: "This pull request renames folders and namespaces to match the repository name."
+          branch: "main" # Or use the default branch name
+          delete-branch: true
