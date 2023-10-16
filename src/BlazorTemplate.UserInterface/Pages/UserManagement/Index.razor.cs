@@ -1,11 +1,9 @@
 using MudBlazor;
-using System.Globalization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using BlazorTemplate.Application.Interfaces;
 using BlazorTemplate.Domain.Extensions;
 using BlazorTemplate.Infrastructure.Identity;
-using BlazorTemplate.UserInterface.Constants;
 using BlazorTemplate.UserInterface.Components;
 
 namespace BlazorTemplate.UserInterface.Pages.UserManagement
@@ -169,14 +167,16 @@ namespace BlazorTemplate.UserInterface.Pages.UserManagement
             if (!dialogResult.Canceled)
             {
                 var serviceResult = await UserService.DeleteUser(user.Id);
+                var resultMessage = serviceResult.ToString();
+
                 if (serviceResult.IsSuccess)
                 {
-                    Snackbar.Add(string.Format(CultureInfo.CurrentCulture, ResultMessages.Deleted, user.Email), Severity.Success);
+                    Snackbar.Add(resultMessage, Severity.Success);
                     await LoadUsers();
                 }
                 else
                 {
-                    Snackbar.Add(serviceResult.ToString(), Severity.Error);
+                    Snackbar.Add(resultMessage, Severity.Error);
                 }
             }
         }

@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlazorTemplate.Infrastructure.Identity.Migrations
 {
     [DbContext(typeof(AppIdentityDbContext))]
-    [Migration("20231015155125_InitialIdentityModel")]
+    [Migration("20231016011054_InitialIdentityModel")]
     partial class InitialIdentityModel
     {
         /// <inheritdoc />

@@ -2,57 +2,68 @@ namespace BlazorTemplate.Domain.Common
 {
     public class ServiceResult
     {
-        private static readonly ServiceResult _success = new() { IsSuccess = true };
-        protected List<string> _errors = new();
+        private readonly List<string> _messages = new();
 
-        public bool IsSuccess { get; protected set; }
-
-        public IEnumerable<string> Errors => _errors;
-
-        public static ServiceResult Success => _success;
-
-        public static ServiceResult Error(params string[] errors)
+        protected ServiceResult(bool isSuccess)
         {
-            var result = new ServiceResult();
-
-            result.AddErrors(errors);
-
-            return result;
+            IsSuccess = isSuccess;
         }
 
-        protected void AddErrors(params string[] errors)
+        public bool IsSuccess { get; }
+
+        public IReadOnlyCollection<string> Messages => _messages.AsReadOnly();
+
+        public static ServiceResult Success => new ServiceResult(true);
+
+        public static ServiceResult Error => new ServiceResult(false);
+
+        public ServiceResult WithMessage(params string[] messages)
         {
-            if (errors != null && errors.Any())
+            AddMessages(messages);
+
+            return this;
+        }
+
+        public ServiceResult WithFormatMessage(string format, params string[] args)
+        {
+            var message = string.Format(format, args);
+
+            AddMessages(message);
+
+            return this;
+        }
+
+        protected void AddMessages(params string[] messages)
+        {
+            if (messages != null && messages.Any())
             {
-                _errors.AddRange(errors.Where(e => !string.IsNullOrWhiteSpace(e)));
+                _messages.AddRange(messages.Where(e => !string.IsNullOrWhiteSpace(e)));
             }
         }
 
         public override string ToString()
-        {
-            return IsSuccess ? "Success" : string.Join(Environment.NewLine, Errors);
-        }
+            => string.Join(Environment.NewLine, _messages);
     }
 
-    public class ServiceResult<T> : ServiceResult
-    {
-        private ServiceResult(bool isSuccess, T? data)
-        {
-            Data = data;
-            IsSuccess = isSuccess;
-        }
+    // public class ServiceResult<T> : ServiceResult
+    // {
+    //     private ServiceResult(bool isSuccess, T? data)
+    //     {
+    //         Data = data;
+    //         IsSuccess = isSuccess;
+    //     }
 
-        public T? Data { get; private set; } = default;
+    //     public T? Data { get; private set; } = default;
 
-        public static new ServiceResult<T> Success(T data) => new(true, data);
+    //     public static new ServiceResult<T> Success(T data) => new(true, data);
 
-        public static ServiceResult<T> Error(string message, T? data = default)
-        {
-            var result = new ServiceResult<T>(false, data);
+    //     public static ServiceResult<T> Error(string message, T? data = default)
+    //     {
+    //         var result = new ServiceResult<T>(false, data);
 
-            result.AddErrors(message);
+    //         result.AddErrors(message);
 
-            return result;
-        }
-    }
+    //         return result;
+    //     }
+    // }
 }

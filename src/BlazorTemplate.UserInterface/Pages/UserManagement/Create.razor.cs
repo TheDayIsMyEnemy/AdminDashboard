@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 using BlazorTemplate.Application.Interfaces;
-using BlazorTemplate.UserInterface.Constants;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using MudBlazor;
@@ -28,20 +27,19 @@ namespace BlazorTemplate.UserInterface.Pages.UserManagement
         {
             IsLoading = true;
 
-            var message = string.Format(ResultMessages.Created, FormModel.Email);
-            var severity = Severity.Success;
+            var serviceResult = await UserService.CreateUser(FormModel.Email, FormModel.Email, FormModel.Password, FormModel.FirstName, FormModel.LastName);
 
-            var result = await UserService.CreateUser(FormModel.Email, FormModel.Email, FormModel.Password, FormModel.FirstName, FormModel.LastName);
-
-            if (!result.IsSuccess)
+            if (serviceResult.IsSuccess)
             {
-                message = result.ToString();
-                severity = Severity.Error;
+                Snackbar.Add(serviceResult.ToString(), Severity.Success);
+                MudDialog.Close();
+            }
+            else
+            {
+                Snackbar.Add(serviceResult.ToString(), Severity.Error);
             }
 
             IsLoading = false;
-            Snackbar.Add(message, severity);
-            MudDialog.Close();
         }
     }
 

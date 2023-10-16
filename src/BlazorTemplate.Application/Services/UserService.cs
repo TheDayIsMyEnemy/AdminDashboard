@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using BlazorTemplate.Application.Interfaces;
 using BlazorTemplate.Domain.Common;
 using BlazorTemplate.Domain.Constants;
@@ -38,44 +37,47 @@ namespace BlazorTemplate.Application.Services
         {
             var currentUser = await GetCurrentUser();
             if (currentUser == null)
-                throw new ArgumentNullException("Current user not found");
+            {
+                throw new ArgumentNullException(ResultMessages.Formats.NotFound, "CurrentUser");
+            }
 
             if (currentUser.Id.Equals(userId))
-                throw new ArgumentException("Invalid delete action");
+            {
+                throw new ArgumentException(ResultMessages.InvalidAction);
+            }
 
             var userToDelete = await _userManager.FindByIdAsync(userId);
             if (userToDelete == null)
-                throw new ArgumentNullException("User to delete not found");
+            {
+                throw new ArgumentNullException(ResultMessages.Formats.NotFound, "User for removal");
+            }
 
-            var currentUserRoles = await _userManager.GetRolesAsync(currentUser);
-            var isCurrentUserSuperAdmin = currentUserRoles.Any(r => r.Equals(Roles.SuperAdmin));
-            var isCurrentUserAdmin = currentUserRoles.Any(r => r.Equals(Roles.Admin));
-            if (!isCurrentUserSuperAdmin && !isCurrentUserAdmin)
-                return ServiceResult.Error("You do not have permission to perform this action.");
-
-            var userToDeleteRoles = await _userManager.GetRolesAsync(userToDelete);
-            var isUserToDeleteSuperAdmin = userToDeleteRoles.Any(r => r.Equals(Roles.SuperAdmin));
-            var isUserToDeleteAdmin = currentUserRoles.Any(r => r.Equals(Roles.Admin));
-            if (isUserToDeleteSuperAdmin)
-                return ServiceResult.Error($"{Roles.SuperAdmin} cannot be deleted");
-            if (isUserToDeleteAdmin && !isCurrentUserSuperAdmin)
-                throw new InvalidOperationException($"Only {Roles.SuperAdmin} can perform this action");
+            var isCurrentUserAdmin = await _userManager.IsInRoleAsync(currentUser, Roles.Admin);
+            var isUserToDeleteAdmin = await _userManager.IsInRoleAsync(userToDelete, Roles.Admin);
+            if (!isCurrentUserAdmin || isUserToDeleteAdmin)
+            {
+                return ServiceResult.Error.WithMessage(ResultMessages.NoPermissionToPerformThisAction);
+            }
 
             using var appDbContext = _appDbContextFactory.CreateDbContext();
             var member = await appDbContext.Members.FirstOrDefaultAsync(m => m.IdentityGuid == userToDelete.Id);
             if (member == null)
-                throw new ArgumentNullException("Member not found");
+            {
+                throw new ArgumentNullException($"Member with identity: {userToDelete.Id} not found");
+            }
 
             var identityResult = await _userManager.DeleteAsync(userToDelete);
             if (!identityResult.Succeeded)
-                return ServiceResult.Error(identityResult.Errors.Select(e => e.Description).ToArray());
+            {
+                return ServiceResult.Error.WithMessage(identityResult.Errors.Select(e => e.Description).ToArray());
+            }
 
             appDbContext.Members.Remove(member);
             await appDbContext.SaveChangesAsync();
 
             _logger.LogInformation("{CurrentUserEmail} deleted user: {UserEmailToDelete}", currentUser.Email, userToDelete.Email);
 
-            return ServiceResult.Success;
+            return ServiceResult.Success.WithFormatMessage(ResultMessages.Formats.Deleted, userToDelete.Email!);
         }
 
         public async Task<ServiceResult> CreateUser(
@@ -89,7 +91,7 @@ namespace BlazorTemplate.Application.Services
             var identityResult = await _userManager.CreateAsync(memberAccount, password);
             if (!identityResult.Succeeded)
             {
-                ServiceResult.Error(identityResult.Errors.Select(e => e.Description).ToArray());
+                return ServiceResult.Error.WithMessage(identityResult.Errors.Select(e => e.Description).ToArray());
             }
 
             using var appDbContext = _appDbContextFactory.CreateDbContext();
@@ -97,9 +99,9 @@ namespace BlazorTemplate.Application.Services
             await appDbContext.Members.AddAsync(member);
             await appDbContext.SaveChangesAsync();
 
-            _logger.LogInformation("New user created: {UserEmail}", email);
+            _logger.LogInformation(ResultMessages.Formats.Created, email);
 
-            return ServiceResult.Success;
+            return ServiceResult.Success.WithFormatMessage(ResultMessages.Formats.Created, email);
         }
 
         public async Task<IEnumerable<User>> GetAllUsers()
@@ -111,25 +113,38 @@ namespace BlazorTemplate.Application.Services
         {
             var currentUser = await GetCurrentUser();
             if (currentUser == null)
+            {
                 throw new ArgumentNullException("Current user not found");
+            }
 
-            var userToModify = await _userManager.FindByIdAsync(userId);
-            if (userToModify == null)
-                throw new ArgumentNullException("User to assign roles not found");
+            var isCurrentUserAdmin = await _userManager.IsInRoleAsync(currentUser, Roles.Admin);
 
-            var currentUserRoles = await _userManager.GetRolesAsync(currentUser);
-            var isCurrentUserSuperAdmin = currentUserRoles.Any(r => r.Equals(Roles.SuperAdmin));
-            var isCurrentUserAdmin = currentUserRoles.Any(r => r.Equals(Roles.Admin));
+            if (!isCurrentUserAdmin)
+            {
+                return ServiceResult.Error.WithMessage(ResultMessages.NoPermissionToPerformThisAction);
+            }
 
-            if (!isCurrentUserSuperAdmin && !isCurrentUserAdmin)
-                return ServiceResult.Error("Only admin users can assign roles");
+            User? userToModify = null;
+
+            if (currentUser.Id.Equals(userId))
+            {
+                userToModify = currentUser;
+            }
+            else
+            {
+                userToModify = await _userManager.FindByIdAsync(userId);
+                if (userToModify == null)
+                {
+                    throw new ArgumentNullException(ResultMessages.Formats.NotFound, userId);
+                }
+                var isUserToModifyAdmin = await _userManager.IsInRoleAsync(userToModify, Roles.Admin);
+                if (isUserToModifyAdmin)
+                {
+                    return ServiceResult.Error.WithMessage(ResultMessages.NoPermissionToPerformThisAction);
+                }
+            }
 
             var userToModifyRoles = await _userManager.GetRolesAsync(userToModify);
-            var isUserToModifySuperAdmin = userToModifyRoles.Any(r => r.Equals(Roles.SuperAdmin));
-            var isUserToModifyAdmin = userToModifyRoles.Any(r => r.Equals(Roles.Admin));
-
-            if (isUserToModifySuperAdmin || (isCurrentUserAdmin && isUserToModifyAdmin))
-                return ServiceResult.Error("No permission to perform this action.");
 
             var rolesToAdd = newRoles.Except(userToModifyRoles).ToList();
             var rolesToRemove = userToModifyRoles.Except(newRoles).ToList();
@@ -137,19 +152,19 @@ namespace BlazorTemplate.Application.Services
             var hasRolesToRemove = rolesToRemove.Any();
 
             if (!hasRolesToAdd && !hasRolesToRemove)
-                return ServiceResult.Error("There are no roles to modify");
+                return ServiceResult.Error.WithMessage("There are no new roles to modify");
 
             if (hasRolesToRemove)
             {
                 var identityResult = await _userManager.RemoveFromRolesAsync(userToModify, rolesToRemove);
                 if (!identityResult.Succeeded)
-                    return ServiceResult.Error(identityResult.Errors.Select(e => e.Description).ToArray());
+                    return ServiceResult.Error.WithMessage(identityResult.Errors.Select(e => e.Description).ToArray());
             }
             if (hasRolesToAdd)
             {
                 var identityResult = await _userManager.AddToRolesAsync(userToModify, rolesToAdd);
                 if (!identityResult.Succeeded)
-                    return ServiceResult.Error(identityResult.Errors.Select(e => e.Description).ToArray());
+                    return ServiceResult.Error.WithMessage(identityResult.Errors.Select(e => e.Description).ToArray());
             }
 
             return ServiceResult.Success;
@@ -175,12 +190,38 @@ namespace BlazorTemplate.Application.Services
             string userId,
             UserAccountStatus accountStatus)
         {
-            var user = GetCurrentUser();
-            if (user == null)
-                throw new ArgumentNullException("Current user not found");
+            var currentUser = await GetCurrentUser();
+            if (currentUser == null)
+            {
+                throw new ArgumentNullException(ResultMessages.Formats.NotFound, "CurrentUser");
+            }
+            var isCurrentUserAdmin = await _userManager.IsInRoleAsync(currentUser, Roles.Admin);
+            if (!isCurrentUserAdmin)
+            {
+                ServiceResult.Error.WithMessage(ResultMessages.NoPermissionToPerformThisAction);
+            }
 
-            if (user.Id!.Equals(userId))
-                throw new ArgumentException("No permission");
+            if (currentUser.Id!.Equals(userId))
+            {
+                throw new ArgumentException(ResultMessages.InvalidAction);
+            }
+            var userToModify = await _userManager.FindByIdAsync(userId);
+            if (userToModify == null)
+            {
+                throw new ArgumentNullException(ResultMessages.Formats.NotFound, "Set User Account Status");
+            }
+            var isUserToModifyAdmin = await _userManager.IsInRoleAsync(userToModify, Roles.Admin);
+            if (!isUserToModifyAdmin)
+            {
+                ServiceResult.Error.WithMessage(ResultMessages.NoPermissionToPerformThisAction);
+            }
+            if (userToModify.AccountStatus == accountStatus)
+            {
+                ServiceResult.Error.WithMessage(ResultMessages.InvalidAction);
+            }
+
+            currentUser.AccountStatus = accountStatus;
+            await _userManager.UpdateAsync(currentUser);
 
             return ServiceResult.Success;
         }

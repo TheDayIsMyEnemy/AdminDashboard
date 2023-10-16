@@ -31,7 +31,7 @@ namespace BlazorTemplate.Infrastructure.Identity
                 await CreateUser(
                     "admin@blazor.template",
                     "Password11!",
-                    Roles.SuperAdmin,
+                    Roles.Admin,
                     userManager
                 );
                 logger.LogInformation("Users created");

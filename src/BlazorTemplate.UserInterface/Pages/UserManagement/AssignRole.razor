@@ -7,7 +7,7 @@
                 @bind-SelectedValues="UserRoles">
                 @foreach (var role in AllRoles)
                 {
-                    <MudSelectItem Value="@role" />
+                    <MudSelectItem Value="@role" Disabled="@(IsUserAdmin && role!.Equals(Roles.Admin))"/>
                 }
             </MudSelect>
         </MudForm>
@@ -28,6 +28,7 @@
     private MudForm? Form = new();
     private IEnumerable<string?> AllRoles = Enumerable.Empty<string>();
     private IEnumerable<string?> UserRoles = Enumerable.Empty<string>();
+    private bool IsUserAdmin = false;
 
     [Inject]
     private IUserService UserService { get; set; } = null!;
@@ -48,6 +49,7 @@
     {
         AllRoles = await UserService.GetAllRoles();
         UserRoles = await UserService.GetUserRoles(UserIdToAssignRoles);
+        IsUserAdmin = UserRoles.Any(r => r!.Equals(Roles.Admin));
     }
 
     private async Task Assign()
