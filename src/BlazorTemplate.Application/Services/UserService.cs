@@ -43,13 +43,13 @@ namespace BlazorTemplate.Application.Services
 
             if (currentUser.Id.Equals(userId))
             {
-                throw new ArgumentException(ResultMessages.InvalidAction);
+                return ServiceResult.Error.WithMessage(ResultMessages.InvalidAction);
             }
 
             var userToDelete = await _userManager.FindByIdAsync(userId);
             if (userToDelete == null)
             {
-                throw new ArgumentNullException(ResultMessages.Formats.NotFound, "User for removal");
+                throw new ArgumentNullException(ResultMessages.Formats.NotFound, userId);
             }
 
             var isCurrentUserAdmin = await _userManager.IsInRoleAsync(currentUser, Roles.Admin);
@@ -75,7 +75,7 @@ namespace BlazorTemplate.Application.Services
             appDbContext.Members.Remove(member);
             await appDbContext.SaveChangesAsync();
 
-            _logger.LogInformation("{CurrentUserEmail} deleted user: {UserEmailToDelete}", currentUser.Email, userToDelete.Email);
+            _logger.LogInformation(string.Format(ResultMessages.Formats.EntityPerformedActionOnEntity, currentUser.Email, "deleted", userToDelete.Email));
 
             return ServiceResult.Success.WithFormatMessage(ResultMessages.Formats.Deleted, userToDelete.Email!);
         }
@@ -152,7 +152,7 @@ namespace BlazorTemplate.Application.Services
             var hasRolesToRemove = rolesToRemove.Any();
 
             if (!hasRolesToAdd && !hasRolesToRemove)
-                return ServiceResult.Error.WithMessage("There are no new roles to modify");
+                return ServiceResult.Error.WithMessage(ResultMessages.InvalidAction);
 
             if (hasRolesToRemove)
             {
@@ -167,14 +167,18 @@ namespace BlazorTemplate.Application.Services
                     return ServiceResult.Error.WithMessage(identityResult.Errors.Select(e => e.Description).ToArray());
             }
 
-            return ServiceResult.Success;
+            _logger.LogInformation(string.Format(ResultMessages.Formats.EntityPerformedActionOnEntity, currentUser.Email, "updated roles for", userToModify.Email));
+
+            return ServiceResult.Success.WithMessage(ResultMessages.Formats.Updated, userToModify.Email!);
         }
 
         public async Task<IEnumerable<string>> GetUserRoles(string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
-                throw new ArgumentNullException("User not found");
+            {
+                throw new ArgumentNullException(ResultMessages.Formats.NotFound, userId);
+            }
 
             var roles = await _userManager.GetRolesAsync(user);
             return roles;
@@ -188,42 +192,47 @@ namespace BlazorTemplate.Application.Services
 
         public async Task<ServiceResult> SetUserAccountStatus(
             string userId,
-            UserAccountStatus accountStatus)
+            UserAccountStatus newAccountStatus)
         {
             var currentUser = await GetCurrentUser();
             if (currentUser == null)
             {
                 throw new ArgumentNullException(ResultMessages.Formats.NotFound, "CurrentUser");
             }
+
             var isCurrentUserAdmin = await _userManager.IsInRoleAsync(currentUser, Roles.Admin);
             if (!isCurrentUserAdmin)
             {
-                ServiceResult.Error.WithMessage(ResultMessages.NoPermissionToPerformThisAction);
+                return ServiceResult.Error.WithMessage(ResultMessages.NoPermissionToPerformThisAction);
             }
 
             if (currentUser.Id!.Equals(userId))
             {
-                throw new ArgumentException(ResultMessages.InvalidAction);
+                return ServiceResult.Error.WithMessage(ResultMessages.InvalidAction);
             }
+
             var userToModify = await _userManager.FindByIdAsync(userId);
             if (userToModify == null)
             {
-                throw new ArgumentNullException(ResultMessages.Formats.NotFound, "Set User Account Status");
+                throw new ArgumentNullException(ResultMessages.Formats.NotFound, userId);
             }
+            if (userToModify.AccountStatus == newAccountStatus)
+            {
+                return ServiceResult.Error.WithMessage(ResultMessages.InvalidAction);
+            }
+
             var isUserToModifyAdmin = await _userManager.IsInRoleAsync(userToModify, Roles.Admin);
-            if (!isUserToModifyAdmin)
+            if (isUserToModifyAdmin && newAccountStatus == UserAccountStatus.Disabled)
             {
-                ServiceResult.Error.WithMessage(ResultMessages.NoPermissionToPerformThisAction);
-            }
-            if (userToModify.AccountStatus == accountStatus)
-            {
-                ServiceResult.Error.WithMessage(ResultMessages.InvalidAction);
+                return ServiceResult.Error.WithMessage(ResultMessages.NoPermissionToPerformThisAction);
             }
 
-            currentUser.AccountStatus = accountStatus;
-            await _userManager.UpdateAsync(currentUser);
+            userToModify.AccountStatus = newAccountStatus;
+            await _userManager.UpdateAsync(userToModify);
 
-            return ServiceResult.Success;
+            _logger.LogInformation(string.Format(ResultMessages.Formats.EntityPerformedActionOnEntity, currentUser.Id, $"updated account status to {newAccountStatus} for", userToModify.Email));
+
+            return ServiceResult.Success.WithMessage($"{userToModify.Email}  account status is {newAccountStatus}");
         }
 
         private async Task<User?> GetCurrentUser()

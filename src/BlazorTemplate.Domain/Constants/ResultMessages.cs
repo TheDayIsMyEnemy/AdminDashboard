@@ -8,6 +8,7 @@ namespace BlazorTemplate.Domain.Constants
             public const string Updated = "{0} has been updated successfully.";
             public const string Deleted = "{0} has been deleted successfully.";
             public const string NotFound = "{0} not found.";
+            public const string EntityPerformedActionOnEntity = "{0} has {1} {2}";
         }
 
         public const string InvalidAction = "The requested action is invalid.";

@@ -61,8 +61,8 @@
 
             if (serviceResult.IsSuccess)
             {
-                MudDialog.Close(DialogResult.Ok(UserRoles));
-                Snackbar.Add("User roles updated successfully", Severity.Success);
+                MudDialog.Close();
+                Snackbar.Add(serviceResult.ToString(), Severity.Success);
             }
             else
             {

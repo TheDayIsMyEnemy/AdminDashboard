@@ -18,16 +18,12 @@ builder.Services.AddDbContextFactory<AppDbContext>(
     options =>
         options
             .UseMySql(dbConnectionString, ServerVersion.AutoDetect(dbConnectionString))
-            .LogTo(Console.WriteLine, LogLevel.Information)
-            .EnableSensitiveDataLogging()
-            .EnableDetailedErrors());
+            .LogTo(Console.WriteLine, LogLevel.Information));
 builder.Services.AddDbContextFactory<AppIdentityDbContext>(
     options =>
         options
             .UseMySql(identityDbConnectionString, ServerVersion.AutoDetect(identityDbConnectionString))
-            .LogTo(Console.WriteLine, LogLevel.Information)
-            .EnableSensitiveDataLogging()
-            .EnableDetailedErrors());
+            .LogTo(Console.WriteLine, LogLevel.Information));
 
 builder.Services.AddSecurity();
 

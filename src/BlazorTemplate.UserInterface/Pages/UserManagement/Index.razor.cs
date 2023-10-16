@@ -77,32 +77,11 @@ namespace BlazorTemplate.UserInterface.Pages.UserManagement
 
         protected async Task SetAccountStatus(User user)
         {
-            // var userRoles = await UserManager.GetRolesAsync(user);
-            // if (userRoles.Any(r => r == Roles.Admin))
-            // {
-            //     Snackbar.Add(ResultMessages.NoPermissionToPerformThisAction, Severity.Warning);
-            //     return;
-            // }
+            var newAccountStatus = user.AccountStatus == UserAccountStatus.Enabled ? UserAccountStatus.Disabled : UserAccountStatus.Enabled;
 
-            // var action = user.IsDisabled ? "Enable" : "Disable";
+            var serviceResult = await UserService.SetUserAccountStatus(user.Id, newAccountStatus);
 
-            // user.IsDisabled = !user.IsDisabled;
-            // var identityResult = await UserManager.UpdateAsync(user);
-
-            // if (identityResult.Succeeded)
-            // {
-            //     Snackbar.Add($"User account {user.Email} has been {action}d.", Severity.Success);
-            // }
-            // else
-            // {
-            //     Snackbar.Add(
-            //         string.Join(
-            //             Environment.NewLine,
-            //             identityResult.Errors.Select(e => e.Description)
-            //         ),
-            //         Severity.Error
-            //     );
-            // }
+            Snackbar.Add(serviceResult.ToString(), serviceResult.IsSuccess ? Severity.Success : Severity.Error);
         }
 
         protected async Task ResetAccountLockout(User user)
