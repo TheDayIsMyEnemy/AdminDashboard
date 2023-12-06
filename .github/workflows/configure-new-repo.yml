@@ -1,26 +1,24 @@
+---
 name: Configure New Repository
-
-on:
+'on':
   push:
     branches:
       - main
-
 jobs:
   configure:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-
       - name: Get repository name
         id: get_repo_name
-        run: echo "::set-output name=name::${{ github.event.repository.name }}"
-
+        run: echo "::set-output name=name::${{ github.event.repository.name }}
       - name: Rename folders, files and file content
         run: |
           repo_name=${{ steps.get_repo_name.outputs.name }}
-          find . ! -path . -name '.*' -prune -o -type d -exec bash -c 'mv "{}" "$(echo "{}" | sed "s/BlazorTemplate/$repo_name/")"' \; \ && find . ! -path . -name '.*' -prune -o -type f \( -name '*.cs' -o -name '*.csproj' -o -name '*.sln' \) -exec bash -c 'mv "{}" "$(echo "{}" | sed "s/BlazorTemplate/$repo_name/g")"' \; \ && find . -type f \( -name '*.razor' -o -name '*.cshtml' -o -name '*.cs' -o -name '*.csproj' -o -name '*.sln' -o -name '*.md' \) -exec sed -i 's/BlazorTemplate/$repo_name/g' {} + -print
+          find . ! -path . -name '.*' -prune -o -type d -exec bash -c 'mv "{}" "$(echo "{}" | sed "s/BlazorTemplate/$repo_name/")"' \;
+          find . ! -path . -name '.*' -prune -o -type f \( -name '*.cs' -o -name '*.csproj' -o -name '*.sln' \) -exec bash -c 'mv "{}" "$(echo "{}" | sed "s/BlazorTemplate/$repo_name/g")"' \;
+          find . -type f \( -name '*.razor' -o -name '*.cshtml' -o -name '*.cs' -o -name '*.csproj' -o -name '*.sln' -o -name '*.md' \) -exec sed -i 's/BlazorTemplate/$repo_name/g' {}
 
       - name: Commit changes
         run: |
@@ -34,7 +32,7 @@ jobs:
         uses: peter-evans/create-pull-request@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          title: "Configure New Repository"
-          body: "This pull request renames folders and namespaces to match the repository name."
-          branch: "main" # Or use the default branch name
+          title: Configure New Repository
+          body: This pull request renames folders and namespaces to match the repository name.
+          branch: main
           delete-branch: true
