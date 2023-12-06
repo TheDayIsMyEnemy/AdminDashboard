@@ -1,4 +1,3 @@
----
 name: Configure New Repository
 'on':
   push:
