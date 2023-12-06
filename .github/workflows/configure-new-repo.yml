@@ -16,11 +16,11 @@ jobs:
         run: |
           repo_name=${{ steps.get_repo_name.outputs.name }}
 
-          find . ! -path . -name '.*' -prune -o -type d -exec bash -c 'mv "{}" "$(echo "{}" | sed "s/BlazorTemplate/${repo_name}/")"' \;
+          find ../../ ! -path . -name '.*' -prune -o -type d -exec bash -c 'mv "{}" "$(echo "{}" | sed "s/BlazorTemplate/${repo_name}/")"' \;
 
-          find . ! -path . -name '.*' -prune -o -type f \( -name '*.cs' -o -name '*.csproj' -o -name '*.sln' \) -exec bash -c 'mv "{}" "$(echo "{}" | sed "s/BlazorTemplate/${repo_name}/g")"' \;
+          find ../../ ! -path . -name '.*' -prune -o -type f \( -name '*.cs' -o -name '*.csproj' -o -name '*.sln' \) -exec bash -c 'mv "{}" "$(echo "{}" | sed "s/BlazorTemplate/${repo_name}/g")"' \;
 
-          find . -type f \( -name '*.razor' -o -name '*.cshtml' -o -name '*.cs' -o -name '*.csproj' -o -name '*.sln' -o -name '*.md' \) -exec sed -i 's/BlazorTemplate/${repo_name}/g' {} 
+          find ../../ -type f \( -name '*.razor' -o -name '*.cshtml' -o -name '*.cs' -o -name '*.csproj' -o -name '*.sln' -o -name '*.md' \) -exec sed -i 's/BlazorTemplate/${repo_name}/g' {} 
       - name: Commit changes
         run: |
           git config --global user.email "tthedayismyenemy@gmail.com"
