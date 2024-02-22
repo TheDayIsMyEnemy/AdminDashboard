@@ -15,6 +15,9 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.created && github.repository != 'TheDayIsMyEnemy/BlazorTemplate' }}
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
       - name: Set repository name
         id: repo_name
         run: echo "::set-output name=name::${{ github.event.repository.name }}"
@@ -28,9 +31,8 @@ jobs:
       - name: Remove setup files
         run: rm .github/workflows/configure-new-repo.yml
 
-      - name: Create commits
-        uses: actions/checkout@v3
-      - run: |
+      - name: Commit changes
+        run: |
           git config user.name 'TheDayIsMyEnemy'
           git config user.email 'TheDayIsMyEnemy@users.noreply.github.com'
           git checkout -b new-repo
