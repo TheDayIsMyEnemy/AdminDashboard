@@ -7,10 +7,10 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Identity;
-using ${repo_name}.Infrastructure.Identity;
+using BlazorTemplate.Infrastructure.Identity;
 using System.ComponentModel.DataAnnotations;
 
-namespace ${repo_name}.Server.Pages.Account
+namespace BlazorTemplate.Server.Pages.Account
 {
     public class RegisterModel : PageModel
     {
@@ -91,7 +91,7 @@ namespace ${repo_name}.Server.Pages.Account
             //        //    "/Account/ConfirmEmail",
             //        //    pageHandler: null,
             //        //    values            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI ${repo_name}.Infrastructure and is not intended to be used
+            ///     This API supports the ASP.NET Core Identity default UI BlazorTemplate.Infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
             //        //    protocol: Request.Scheme);

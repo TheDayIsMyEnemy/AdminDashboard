@@ -1,18 +1,18 @@
 using System.Net;
-using ${repo_name}.Application.Services;
-using ${repo_name}.Application.Interfaces;
-using ${repo_name}.Infrastructure.Data;
-using ${repo_name}.Infrastructure.Identity;
+using BlazorTemplate.Application.Services;
+using BlazorTemplate.Application.Interfaces;
+using BlazorTemplate.Infrastructure.Data;
+using BlazorTemplate.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using static ${repo_name}.Infrastructure.Identity.Constants;
+using static BlazorTemplate.Infrastructure.Identity.Constants;
 using Microsoft.AspNetCore.Components.Server.Circuits;
-using ${repo_name}.Server.Services;
+using BlazorTemplate.Server.Services;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server;
 
-namespace ${repo_name}.Server
+namespace BlazorTemplate.Server
 {
     public static class AppServicesConfig
     {

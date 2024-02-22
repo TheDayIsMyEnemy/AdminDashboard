@@ -1,1 +1,1 @@
-# ${repo_name}
+# BlazorTemplate

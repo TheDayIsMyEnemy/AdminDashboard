@@ -5,15 +5,15 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{D4182CFD-CE63-4402-A88E-82F19E554C82}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "${repo_name}.Application", "src\${repo_name}.Application\${repo_name}.Application.csproj", "{65E659BE-4835-4D2C-9A45-74E84A6262B8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorTemplate.Application", "src\BlazorTemplate.Application\BlazorTemplate.Application.csproj", "{65E659BE-4835-4D2C-9A45-74E84A6262B8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "${repo_name}.Domain", "src\${repo_name}.Domain\${repo_name}.Domain.csproj", "{8E443BA2-9AE9-4E56-8B8B-FBBF5ADE225D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorTemplate.Domain", "src\BlazorTemplate.Domain\BlazorTemplate.Domain.csproj", "{8E443BA2-9AE9-4E56-8B8B-FBBF5ADE225D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "${repo_name}.Infrastructure", "src\${repo_name}.Infrastructure\${repo_name}.Infrastructure.csproj", "{3C639ECE-D492-4E38-8B5D-4415C3F8A8F1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorTemplate.Infrastructure", "src\BlazorTemplate.Infrastructure\BlazorTemplate.Infrastructure.csproj", "{3C639ECE-D492-4E38-8B5D-4415C3F8A8F1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "${repo_name}.Server", "src\${repo_name}.Server\${repo_name}.Server.csproj", "{D676C802-69D2-414D-B444-78C5E1D79EFD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorTemplate.Server", "src\BlazorTemplate.Server\BlazorTemplate.Server.csproj", "{D676C802-69D2-414D-B444-78C5E1D79EFD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "${repo_name}.UserInterface", "src\${repo_name}.UserInterface\${repo_name}.UserInterface.csproj", "{0181B760-1FBB-4129-97A9-405C183A0DC7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorTemplate.UserInterface", "src\BlazorTemplate.UserInterface\BlazorTemplate.UserInterface.csproj", "{0181B760-1FBB-4129-97A9-405C183A0DC7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,6 +1,6 @@
 using MudBlazor;
 
-namespace ${repo_name}.UserInterface.Themes
+namespace BlazorTemplate.UserInterface.Themes
 {
     public class DefaultTheme : MudTheme
     {

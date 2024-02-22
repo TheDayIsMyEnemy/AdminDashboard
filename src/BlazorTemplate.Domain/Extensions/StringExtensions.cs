@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace ${repo_name}.Domain.Extensions
+namespace BlazorTemplate.Domain.Extensions
 {
     public static class StringExtensions
     {

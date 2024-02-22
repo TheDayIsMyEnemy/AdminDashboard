@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using ${repo_name}.Application.Interfaces;
+using BlazorTemplate.Application.Interfaces;
 using Microsoft.AspNetCore.Components.Authorization;
 
-namespace ${repo_name}.Server.Services
+namespace BlazorTemplate.Server.Services
 {
     public class AuthenticationService : IAuthenticationService
     {

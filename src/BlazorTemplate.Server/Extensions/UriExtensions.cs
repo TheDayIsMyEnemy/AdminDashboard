@@ -1,4 +1,4 @@
-namespace ${repo_name}.Server.Extensions
+namespace BlazorTemplate.Server.Extensions
 {
     public static class UriExtensions
     {

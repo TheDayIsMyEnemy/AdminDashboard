@@ -3,14 +3,14 @@
 #nullable disable
 
 using System.ComponentModel.DataAnnotations;
-using ${repo_name}.Infrastructure.Identity;
-using ${repo_name}.Server.Extensions;
+using BlazorTemplate.Infrastructure.Identity;
+using BlazorTemplate.Server.Extensions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace ${repo_name}.Server.Pages.Account
+namespace BlazorTemplate.Server.Pages.Account
 {
     public class LoginModel : PageModel
     {

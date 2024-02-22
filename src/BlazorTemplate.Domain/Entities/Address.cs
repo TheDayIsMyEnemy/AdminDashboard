@@ -1,4 +1,4 @@
-namespace ${repo_name}.Domain.Entities
+namespace BlazorTemplate.Domain.Entities
 {
     public class Address
     {

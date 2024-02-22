@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace ${repo_name}.Infrastructure.Identity
+namespace BlazorTemplate.Infrastructure.Identity
 {
     public class AppIdentityDbContext
         : IdentityDbContext<User,
