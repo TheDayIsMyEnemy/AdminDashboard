@@ -34,7 +34,7 @@ jobs:
       - name: Create pull request
         uses: peter-evans/create-pull-request@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN || secrets.PAT_TOKEN }}
+          token: ${{ secrets.PAT_TOKEN || secrets.GITHUB_TOKEN }}
           commit-message: Configure new repo
           title: Configure new repo
           body: This pull request renames folders and namespaces to match the repository name.
