@@ -10,33 +10,29 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+        with:
+          # Set a flag indicating whether the repository is new
+          fetch-depth: 0
 
       - name: Set repository name
         id: set_repo_name
         run: echo "::set-output name=name::BlazorTemplate"
 
-      - name: Check if it's a new repository
-        id: check_new_repo
-        run: |
-          if [ "$(ls -A)" ]; then
-            echo "is_new_repo=false" >> $GITHUB_ENV
-          else
-            echo "is_new_repo=true" >> $GITHUB_ENV
-          fi
-
-      - name: Run only for new repository
-        if: steps.check_new_repo.outputs.is_new_repo == 'true'
+      - name: Rename files and folders
+        if: github.event_name == 'push' && github.event.before == '0000000000000000000000000000000000000000'
         run: |
           repo_name=${{ steps.set_repo_name.outputs.name }}
 
           find . -type d -exec bash -c 'mv "$1" "$(echo "$1" | sed "s/BlazorTemplate/${repo_name}/")"' _ {} \;
+
           find . -type f \( -name '*.cs' -o -name '*.csproj' -o -name '*.sln' -o -name '*.razor' -o -name '*.cshtml' -o -name '*.md' \) -exec bash -c 'mv "$1" "$(echo "$1" | sed "s/BlazorTemplate/${repo_name}/g")"' _ {} \;
+
           find . -type f \( -name '*.cs' -o -name '*.csproj' -o -name '*.sln' -o -name '*.razor' -o -name '*.cshtml' -o -name '*.md' \) -exec sed -i 's/BlazorTemplate/${repo_name}/g' {} +
 
           rm .github/workflows/configure-new-repo.yml
 
       - name: Commit changes
-        if: steps.check_new_repo.outputs.is_new_repo == 'true'
+        if: github.event_name == 'push' && github.event.before == '0000000000000000000000000000000000000000'
         run: |
           git config --global user.email "tthedayismyenemy@gmail.com"
           git config --global user.name "TheDayIsMyEnemy"
@@ -45,7 +41,7 @@ jobs:
           git push origin main
 
       - name: Create Pull Request
-        if: steps.check_new_repo.outputs.is_new_repo == 'true'
+        if: github.event_name == 'push' && github.event.before == '0000000000000000000000000000000000000000'
         uses: peter-evans/create-pull-request@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -55,7 +51,7 @@ jobs:
           delete-branch: true
 
       - name: Remove setup files
-        if: steps.check_new_repo.outputs.is_new_repo == 'true'
+        if: github.event_name == 'push' && github.event.before == '0000000000000000000000000000000000000000'
         run: |
           rm .github/workflows/configure-new-repo.yml
           # Remove other setup files as needed
