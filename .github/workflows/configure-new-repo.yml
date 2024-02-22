@@ -19,7 +19,9 @@ jobs:
     if: ${{ github.event.created && github.repository != 'TheDayIsMyEnemy/BlazorTemplate' }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set repository name
         id: repo_name
@@ -42,11 +44,6 @@ jobs:
           git add -A
           git commit -m "Update project structure"
           git push -u origin new-repo
-          git checkout main
-          git merge new-repo
-          git push -u origin main
 
       - name: Create pull request
         run: gh pr create --repo ${{ github.event.repository.url }} --base main --head new-repo --title 'Setup new repository' --body 'Updates the project structure to match the repo name'
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
