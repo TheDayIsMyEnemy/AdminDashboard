@@ -41,16 +41,6 @@ jobs:
           git push -u origin new-repo
 
       - name: Create pull request
-        run: gh pr create --base main --head origin:new-repo --title 'Merge new-repo into main' --body 'Created by Github action'
+        run: gh pr create --repo ${{ github.event.repository.url }} --base main --head new-repo --title 'Setup new repository' --body 'Updates the project structure to match the repo name'
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # - name: Create pull request
-      #   uses: peter-evans/create-pull-request@v4
-      #   with:
-      #     token: ${{ secrets.PAT_TOKEN  || secrets.GITHUB_TOKEN }}
-      #     title: Configure new repo
-      #     body: This pull request renames folders and namespaces to match the repository name.
-      #     branch: configure-new-repo
-      #     base: main
-      #     delete-branch: true
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN || secrets.PAT_TOKEN }}
