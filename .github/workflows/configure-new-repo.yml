@@ -9,48 +9,38 @@ permissions: write-all
 jobs:
   configure:
     runs-on: ubuntu-latest
+    if: ${{ github.event.created && github.repository != 'thedayismyenemy/BlazorTemplate' }}
     steps:
+
       - name: Checkout repository
-        uses: actions/checkout@v2
-        with:
-          # Set a flag indicating whether the repository is new
-          fetch-depth: 0
+        uses: actions/checkout@v3
 
       - name: Set repository name
-        id: set_repo_name
+        id: repo_name
         run: echo "::set-output name=name::${{ github.event.repository.name }}"
 
       - name: Rename files and folders
-        if: github.event_name == 'push' && github.event.before == '0000000000000000000000000000000000000000'
         run: |
-          find ../../ ! -path . -name '.*' -prune -o -type d -exec bash -c 'mv "{}" "$(echo "{}" | sed "s/BlazorTemplate/'"${{ steps.set_repo_name.outputs.name }}/"'")"' \;
-          find ../../ ! -path . -name '.*' -prune -o -type f \( -name '*.cs' -o -name '*.csproj' -o -name '*.sln' \) -exec bash -c 'mv "{}" "$(echo "{}" | sed "s/BlazorTemplate/'"${{ steps.set_repo_name.outputs.name }}/g"'")"' \;
-          find ../../ -type f \( -name '*.razor' -o -name '*.cshtml' -o -name '*.cs' -o -name '*.csproj' -o -name '*.sln' -o -name '*.md' \) -exec sed -i "s/BlazorTemplate/'"${{ steps.set_repo_name.outputs.name }}"'/g" {} +
-          rm .github/workflows/configure-new-repo.yml
+          find ../../ ! -path . -name '.*' -prune -o -type d -exec bash -c 'mv "{}" "$(echo "{}" | sed "s/BlazorTemplate/'"${{ steps.repo_name.outputs.name }}/"'")"' \;
+          find ../../ ! -path . -name '.*' -prune -o -type f \( -name '*.cs' -o -name '*.csproj' -o -name '*.sln' \) -exec bash -c 'mv "{}" "$(echo "{}" | sed "s/BlazorTemplate/'"${{ steps.repo_name.outputs.name }}/g"'")"' \;
+          find ../../ -type f \( -name '*.razor' -o -name '*.cshtml' -o -name '*.cs' -o -name '*.csproj' -o -name '*.sln' -o -name '*.md' \) -exec sed -i "s/BlazorTemplate/'"${{ steps.repo_name.outputs.name }}"'/g" {} +
 
-      - name: Create new branch
-        if: github.event_name == 'push' && github.event.before == '0000000000000000000000000000000000000000'
+      - name: Remove setup files
+        run: rm .github/workflows/configure-new-repo.yml
+
+      - name: Commit changes
         run: |
-          git config --global user.email "tthedayismyenemy@gmail.com"
-          git config --global user.name "TheDayIsMyEnemy"
+          git config --local user.email "tthedayismyenemy@gmail.com"
+          git config --local user.name "TheDayIsMyEnemy"
           git checkout -b configure-new-repo
-          git add .
-          git commit -m "Configure New Repository"
+          git commit -am "Configure New Repository"
           git push origin configure-new-repo
 
-      - name: Create pull
-        if: github.event_name == 'push' && github.event.before == '0000000000000000000000000000000000000000'
+      - name: Create pull request
         uses: peter-evans/create-pull-request@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           title: Configure New Repository
           body: This pull request renames folders and namespaces to match the repository name.
           branch: configure-new-repo
-          base: main
-          delete-branch: true
-
-      - name: Remove setup files
-        if: github.event_name == 'push' && github.event.before == '0000000000000000000000000000000000000000'
-        run: |
-          rm .github/workflows/configure-new-repo.yml
-          # Remove other setup files as needed
+          # delete-branch: true
