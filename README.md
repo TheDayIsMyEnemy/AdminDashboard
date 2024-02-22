@@ -1,3 +1,3 @@
 # BlazorTemplate
 
-[![CodeQL](https://github.com/TheDayIsMyEnemy/BlazorTemplate/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/TheDayIsMyEnemy/BlazorTemplate/actions/workflows/github-code-scanning/codeql)
+[![Build and Test](https://github.com/TheDayIsMyEnemy/BlazorTemplate/actions/workflows/build.yml/badge.svg)](https://github.com/TheDayIsMyEnemy/BlazorTemplate/actions/workflows/build.yml) [![Configure New Repository](https://github.com/TheDayIsMyEnemy/BlazorTemplate/actions/workflows/configure-new-repo.yml/badge.svg)](https://github.com/TheDayIsMyEnemy/BlazorTemplate/actions/workflows/configure-new-repo.yml) [![CodeQL](https://github.com/TheDayIsMyEnemy/BlazorTemplate/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/TheDayIsMyEnemy/BlazorTemplate/actions/workflows/github-code-scanning/codeql)
