@@ -28,19 +28,19 @@ jobs:
       - name: Remove setup files
         run: rm .github/workflows/configure-new-repo.yml
 
-      - name: Commit changes
-        run: |
-          git config --local user.email "tthedayismyenemy@gmail.com"
-          git config --local user.name "TheDayIsMyEnemy"
-          git checkout -b configure-new-repo
-          git commit -am "Configure New Repository"
-          git push origin configure-new-repo
+      # - name: Commit changes
+      #   run: |
+      #     git config user.name "TheDayIsMyEnemy"
+      #     git config user.email "thedayismyenemy@users.noreply.github.com"
+      #     git commit -am "Configure new repository"
 
       - name: Create pull request
+        id: cpr
         uses: peter-evans/create-pull-request@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          title: Configure New Repository
+          commit-message: Configure new repo
+          title: Configure new repo
           body: This pull request renames folders and namespaces to match the repository name.
           branch: configure-new-repo
           # delete-branch: true
