@@ -29,14 +29,15 @@ jobs:
           find ../../ -type f \( -name '*.razor' -o -name '*.cshtml' -o -name '*.cs' -o -name '*.csproj' -o -name '*.sln' -o -name '*.md' \) -exec sed -i 's/BlazorTemplate/${repo_name}/g' {} +
           rm .github/workflows/configure-new-repo.yml
 
-      - name: Commit changes
+      - name: Create new branch
         if: github.event_name == 'push' && github.event.before == '0000000000000000000000000000000000000000'
         run: |
           git config --global user.email "tthedayismyenemy@gmail.com"
           git config --global user.name "TheDayIsMyEnemy"
+          git checkout -b configure-new-repo
           git add .
           git commit -m "Configure New Repository"
-          git push origin main
+          git push origin configure-new-repo
 
       - name: Create Pull Request
         if: github.event_name == 'push' && github.event.before == '0000000000000000000000000000000000000000'
@@ -45,7 +46,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           title: Configure New Repository
           body: This pull request renames folders and namespaces to match the repository name.
-          branch: main
+          branch: configure-new-repo
           delete-branch: true
 
       - name: Remove setup files
