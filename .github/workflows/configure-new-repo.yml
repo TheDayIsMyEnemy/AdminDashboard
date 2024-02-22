@@ -17,18 +17,21 @@ jobs:
 
       - name: Check if it's a new repository
         id: check_new_repo
-        run: echo "::set-output name=is_new_repo::$(git rev-list --max-parents=0 HEAD | wc -l)"
+        run: echo "::set-output name=is_new_repo::$(ls -A | grep -q . && echo 'false' || echo 'true')"
 
       - name: Run only for new repository
-        if: steps.check_new_repo.outputs.is_new_repo == '1'
+        if: steps.check_new_repo.outputs.is_new_repo == 'true'
         run: |
           repo_name=${{ steps.set_repo_name.outputs.name }}
-          find ../../ ! -path . -name '.*' -prune -o -type d -exec bash -c 'mv "{}" "$(echo "{}" | sed "s/BlazorTemplate/${repo_name}/")"' \;
-          find ../../ ! -path . -name '.*' -prune -o -type f \( -name '*.cs' -o -name '*.csproj' -o -name '*.sln' \) -exec bash -c 'mv "{}" "$(echo "{}" | sed "s/BlazorTemplate/${repo_name}/g")"' \;
-          find ../../ -type f \( -name '*.razor' -o -name '*.cshtml' -o -name '*.cs' -o -name '*.csproj' -o -name '*.sln' -o -name '*.md' \) -exec sed -i 's/BlazorTemplate/${repo_name}/g' {} +
+
+          find . -type d -exec bash -c 'mv "$1" "$(echo "$1" | sed "s/BlazorTemplate/${repo_name}/")"' _ {} \;
+          find . -type f \( -name '*.cs' -o -name '*.csproj' -o -name '*.sln' -o -name '*.razor' -o -name '*.cshtml' -o -name '*.md' \) -exec bash -c 'mv "$1" "$(echo "$1" | sed "s/BlazorTemplate/${repo_name}/g")"' _ {} \;
+          find . -type f \( -name '*.cs' -o -name '*.csproj' -o -name '*.sln' -o -name '*.razor' -o -name '*.cshtml' -o -name '*.md' \) -exec sed -i 's/BlazorTemplate/${repo_name}/g' {} +
+
           rm .github/workflows/configure-new-repo.yml
+
       - name: Commit changes
-        if: steps.check_new_repo.outputs.is_new_repo == '1'
+        if: steps.check_new_repo.outputs.is_new_repo == 'true'
         run: |
           git config --global user.email "tthedayismyenemy@gmail.com"
           git config --global user.name "TheDayIsMyEnemy"
@@ -37,7 +40,7 @@ jobs:
           git push origin main
 
       - name: Create Pull Request
-        if: steps.check_new_repo.outputs.is_new_repo == '1'
+        if: steps.check_new_repo.outputs.is_new_repo == 'true'
         uses: peter-evans/create-pull-request@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -47,7 +50,7 @@ jobs:
           delete-branch: true
 
       - name: Remove setup files
-        if: steps.check_new_repo.outputs.is_new_repo == '1'
+        if: steps.check_new_repo.outputs.is_new_repo == 'true'
         run: |
           rm .github/workflows/configure-new-repo.yml
           # Remove other setup files as needed
