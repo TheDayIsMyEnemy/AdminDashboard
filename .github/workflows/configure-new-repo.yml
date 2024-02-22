@@ -18,9 +18,9 @@ jobs:
 
       - name: Set repository name
         id: set_repo_name
-        run: echo "::set-output name=name::BlazorTemplate"
+        run: echo "::set-output name=name::${{ github.event.repository.name }}"
 
-      - name: Rename folders, files and file content
+      - name: Rename files and folders
         if: github.event_name == 'push' && github.event.before == '0000000000000000000000000000000000000000'
         run: |
           repo_name=${{ steps.set_repo_name.outputs.name }}
@@ -39,7 +39,7 @@ jobs:
           git commit -m "Configure New Repository"
           git push origin configure-new-repo
 
-      - name: Create Pull Request
+      - name: Create pull request
         if: github.event_name == 'push' && github.event.before == '0000000000000000000000000000000000000000'
         uses: peter-evans/create-pull-request@v3
         with:
