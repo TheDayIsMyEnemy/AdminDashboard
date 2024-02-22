@@ -16,7 +16,7 @@ jobs:
     if: ${{ github.event.created && github.repository != 'TheDayIsMyEnemy/BlazorTemplate' }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set repository name
         id: repo_name
@@ -31,11 +31,20 @@ jobs:
       - name: Remove setup files
         run: rm .github/workflows/configure-new-repo.yml
 
+      - name: Commit changes
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git checkout -b "configure-new-repo"
+          git add .
+          git commit -m "Configure new repo"
+          git push origin configure-new-repo
+
       - name: Create pull request
         uses: peter-evans/create-pull-request@v4
         with:
-          token: ${{ secrets.PAT_TOKEN || secrets.GITHUB_TOKEN }}
-          commit-message: Configure new repo
+          token: ${{ secrets.GITHUB_TOKEN || secrets.PAT_TOKEN }}
+          #commit-message: Configure new repo
           title: Configure new repo
           body: This pull request renames folders and namespaces to match the repository name.
           branch: configure-new-repo
