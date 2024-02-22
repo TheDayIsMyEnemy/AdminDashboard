@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace BlazorTemplate.Infrastructure.Data.Migrations
+namespace ${repo_name}.Infrastructure.Data.Migrations
 {
     /// <inheritdoc />
     public partial class InitialModel : Migration

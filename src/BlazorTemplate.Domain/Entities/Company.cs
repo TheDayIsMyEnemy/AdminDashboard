@@ -1,4 +1,4 @@
-namespace BlazorTemplate.Domain.Entities
+namespace ${repo_name}.Domain.Entities
 {
     public class Company : BaseEntity
     {
