@@ -41,8 +41,6 @@ jobs:
           git push -u origin new-repo
           git checkout main
           git merge new-repo
-          git add .
-          git commit -m "Merge into main"
           git push -u origin main
 
       - name: Create pull request
