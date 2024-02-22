@@ -18,17 +18,13 @@ jobs:
         id: set_repo_name
         run: echo "::set-output name=name::BlazorTemplate"
 
-      - name: Rename files and folders
+      - name: Rename folders, files and file content
         if: github.event_name == 'push' && github.event.before == '0000000000000000000000000000000000000000'
         run: |
           repo_name=${{ steps.set_repo_name.outputs.name }}
-
-          find . -type d -exec bash -c 'mv "$1" "$(echo "$1" | sed "s/BlazorTemplate/${repo_name}/")"' _ {} \;
-
-          find . -type f \( -name '*.cs' -o -name '*.csproj' -o -name '*.sln' -o -name '*.razor' -o -name '*.cshtml' -o -name '*.md' \) -exec bash -c 'mv "$1" "$(echo "$1" | sed "s/BlazorTemplate/${repo_name}/g")"' _ {} \;
-
-          find . -type f \( -name '*.cs' -o -name '*.csproj' -o -name '*.sln' -o -name '*.razor' -o -name '*.cshtml' -o -name '*.md' \) -exec sed -i 's/BlazorTemplate/${repo_name}/g' {} +
-
+          find ../../ ! -path . -name '.*' -prune -o -type d -exec bash -c 'mv "{}" "$(echo "{}" | sed "s/BlazorTemplate/${repo_name}/")"' \;
+          find ../../ ! -path . -name '.*' -prune -o -type f \( -name '*.cs' -o -name '*.csproj' -o -name '*.sln' \) -exec bash -c 'mv "{}" "$(echo "{}" | sed "s/BlazorTemplate/${repo_name}/g")"' \;
+          find ../../ -type f \( -name '*.razor' -o -name '*.cshtml' -o -name '*.cs' -o -name '*.csproj' -o -name '*.sln' -o -name '*.md' \) -exec sed -i 's/BlazorTemplate/${repo_name}/g' {} +
           rm .github/workflows/configure-new-repo.yml
 
       - name: Commit changes
