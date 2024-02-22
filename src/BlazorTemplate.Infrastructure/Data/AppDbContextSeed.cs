@@ -1,8 +1,8 @@
-using ${repo_name}.Infrastructure.Data;
+using BlazorTemplate.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace ${repo_name}.Infrastructure
+namespace BlazorTemplate.Infrastructure
 {
     public class AppDbContextSeed
     {

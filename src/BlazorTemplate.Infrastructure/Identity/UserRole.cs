@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 
-namespace ${repo_name}.Infrastructure.Identity
+namespace BlazorTemplate.Infrastructure.Identity
 {
     public class UserRole : IdentityUserRole<string>
     {

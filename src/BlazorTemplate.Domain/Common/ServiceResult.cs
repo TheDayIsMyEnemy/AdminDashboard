@@ -1,4 +1,4 @@
-namespace ${repo_name}.Domain.Common
+namespace BlazorTemplate.Domain.Common
 {
     public class ServiceResult
     {

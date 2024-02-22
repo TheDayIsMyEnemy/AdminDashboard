@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\${repo_name}.Domain\${repo_name}.Domain.csproj" />
+    <ProjectReference Include="..\BlazorTemplate.Domain\BlazorTemplate.Domain.csproj" />
   </ItemGroup>
 
 </Project>

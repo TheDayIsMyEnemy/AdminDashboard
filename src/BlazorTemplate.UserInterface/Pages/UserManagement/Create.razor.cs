@@ -1,10 +1,10 @@
 using System.ComponentModel.DataAnnotations;
-using ${repo_name}.Application.Interfaces;
+using BlazorTemplate.Application.Interfaces;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using MudBlazor;
 
-namespace ${repo_name}.UserInterface.Pages.UserManagement
+namespace BlazorTemplate.UserInterface.Pages.UserManagement
 {
     public class CreateBase : ComponentBase
     {

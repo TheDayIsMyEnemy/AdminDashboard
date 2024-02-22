@@ -2,18 +2,18 @@ using Serilog;
 using MudBlazor.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
-using ${repo_name}.Server;
-using ${repo_name}.Infrastructure;
-using ${repo_name}.Infrastructure.Data;
-using ${repo_name}.Infrastructure.Identity;
+using BlazorTemplate.Server;
+using BlazorTemplate.Infrastructure;
+using BlazorTemplate.Infrastructure.Data;
+using BlazorTemplate.Infrastructure.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseSerilog((context, services, loggerConfig) =>
     loggerConfig.ReadFrom.Configuration(context.Configuration));
 
-var dbConnectionString = builder.Configuration.GetConnectionString("${repo_name}Db");
-var identityDbConnectionString = builder.Configuration.GetConnectionString("${repo_name}IdentityDb");
+var dbConnectionString = builder.Configuration.GetConnectionString("BlazorTemplateDb");
+var identityDbConnectionString = builder.Configuration.GetConnectionString("BlazorTemplateIdentityDb");
 builder.Services.AddDbContextFactory<AppDbContext>(
     options =>
         options

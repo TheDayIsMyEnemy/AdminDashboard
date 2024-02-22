@@ -1,4 +1,4 @@
-namespace ${repo_name}.Infrastructure.Identity
+namespace BlazorTemplate.Infrastructure.Identity
 {
     public enum UserAccountStatus
     {
