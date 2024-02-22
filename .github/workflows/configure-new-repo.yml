@@ -5,10 +5,13 @@ on:
       - main
 
 permissions:
+  actions: write
+  checks: write
   contents: write
   pull-requests: write
+  deployments: write
   issues: read
-  packages: none
+  statuses: read
 
 jobs:
   configure:
@@ -46,4 +49,4 @@ jobs:
       - name: Create pull request
         run: gh pr create --repo ${{ github.event.repository.url }} --base main --head new-repo --title 'Setup new repository' --body 'Updates the project structure to match the repo name'
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
