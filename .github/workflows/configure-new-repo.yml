@@ -33,15 +33,22 @@ jobs:
       - run: |
           git config user.name 'TheDayIsMyEnemy'
           git config user.email 'TheDayIsMyEnemy@users.noreply.github.com'
+          git checkout -b new-repo
           git add -A
           git commit -m "Update project structure"
+          git push -u origin new-repo
 
       - name: Create pull request
-        uses: peter-evans/create-pull-request@v4
-        with:
-          token: ${{ secrets.PAT_TOKEN  || secrets.GITHUB_TOKEN }}
-          title: Configure new repo
-          body: This pull request renames folders and namespaces to match the repository name.
-          branch: configure-new-repo
-          base: main
-          delete-branch: true
+        run: gh pr create -B main -H new-repo --title 'Merge new-repo into main' --body 'Created by Github action'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # - name: Create pull request
+      #   uses: peter-evans/create-pull-request@v4
+      #   with:
+      #     token: ${{ secrets.PAT_TOKEN  || secrets.GITHUB_TOKEN }}
+      #     title: Configure new repo
+      #     body: This pull request renames folders and namespaces to match the repository name.
+      #     branch: configure-new-repo
+      #     base: main
+      #     delete-branch: true
