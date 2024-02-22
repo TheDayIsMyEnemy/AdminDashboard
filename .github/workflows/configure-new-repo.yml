@@ -4,7 +4,11 @@ on:
     branches:
       - main
 
-permissions: write-all
+permissions:
+  contents: write
+  pull-requests: write
+  issues: read
+  packages: none
 
 jobs:
   configure:
@@ -30,7 +34,7 @@ jobs:
       - name: Create pull request
         uses: peter-evans/create-pull-request@v4
         with:
-          token: ${{ secrets.PAT_TOKEN || github.token }}
+          token: ${{ secrets.GITHUB_TOKEN || secrets.PAT_TOKEN }}
           commit-message: Configure new repo
           title: Configure new repo
           body: This pull request renames folders and namespaces to match the repository name.
