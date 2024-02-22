@@ -39,8 +39,14 @@ jobs:
           git add -A
           git commit -m "Update project structure"
           git push -u origin new-repo
+          git checkout -b main
+          git pull -u origin main
+          git merge new-repo
+          git add .
+          git commit -m "Merge into main"
+          git push -u origin main
 
       - name: Create pull request
         run: gh pr create --repo ${{ github.event.repository.url }} --base main --head new-repo --title 'Setup new repository' --body 'Updates the project structure to match the repo name'
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN || secrets.PAT_TOKEN }}
+          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
