@@ -17,7 +17,12 @@ jobs:
 
       - name: Check if it's a new repository
         id: check_new_repo
-        run: echo "::set-output name=is_new_repo::$(ls -A | grep -q . && echo 'false' || echo 'true')"
+        run: |
+          if [ "$(ls -A)" ]; then
+            echo "is_new_repo=false" >> $GITHUB_ENV
+          else
+            echo "is_new_repo=true" >> $GITHUB_ENV
+          fi
 
       - name: Run only for new repository
         if: steps.check_new_repo.outputs.is_new_repo == 'true'
