@@ -41,9 +41,9 @@ jobs:
           git push -u origin new-repo
 
       - name: Create pull request
-        run: gh pr create -B main -H new-repo --title 'Merge new-repo into main' --body 'Created by Github action'
+        run: gh pr create --base main --head origin:new-repo --title 'Merge new-repo into main' --body 'Created by Github action'
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # - name: Create pull request
       #   uses: peter-evans/create-pull-request@v4
