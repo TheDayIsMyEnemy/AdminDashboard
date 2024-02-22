@@ -31,7 +31,7 @@ jobs:
         id: cpr
         uses: peter-evans/create-pull-request@v3
         with:
-          token: ${{ secrets.PAT_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: Configure new repo
           title: Configure new repo
           body: This pull request renames folders and namespaces to match the repository name.
