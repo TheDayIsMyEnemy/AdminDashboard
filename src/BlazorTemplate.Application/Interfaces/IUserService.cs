@@ -1,8 +1,8 @@
 using System.Security.Claims;
-using BlazorTemplate.Domain.Common;
-using BlazorTemplate.Infrastructure.Identity;
+using ${repo_name}.Domain.Common;
+using ${repo_name}.Infrastructure.Identity;
 
-namespace BlazorTemplate.Application.Interfaces
+namespace ${repo_name}.Application.Interfaces
 {
     public interface IUserService
     {

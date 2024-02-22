@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace BlazorTemplate.Infrastructure.Identity
+namespace ${repo_name}.Infrastructure.Identity
 {
     public static class IdentityConfiguration
     {

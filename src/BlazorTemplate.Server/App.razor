@@ -1,6 +1,6 @@
-﻿@using BlazorTemplate.UserInterface
-@using BlazorTemplate.UserInterface.Pages
-@using BlazorTemplate.UserInterface.Components
+﻿@using ${repo_name}.UserInterface
+@using ${repo_name}.UserInterface.Pages
+@using ${repo_name}.UserInterface.Components
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
@@ -9,10 +9,10 @@
 
 <CascadingAuthenticationState>
     <Router AppAssembly="@typeof(App).Assembly"
-        AdditionalAssemblies="@(new List<System.Reflection.Assembly>(){ typeof(BlazorTemplate.UserInterface.Components.MainLayout).Assembly })">
+        AdditionalAssemblies="@(new List<System.Reflection.Assembly>(){ typeof(${repo_name}.UserInterface.Components.MainLayout).Assembly })">
         <Found Context="routeData">
             <AuthorizeRouteView Resource="@routeData" RouteData="@routeData"
-                DefaultLayout="@typeof(BlazorTemplate.UserInterface.Components.MainLayout)">
+                DefaultLayout="@typeof(${repo_name}.UserInterface.Components.MainLayout)">
                 <Authorizing>
                     <text>Please wait, we are authorizing you...</text>
                 </Authorizing>

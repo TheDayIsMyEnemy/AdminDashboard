@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace BlazorTemplate.Server.Pages.Account
+namespace ${repo_name}.Server.Pages.Account
 {
     public class Confirmation : PageModel
     {
