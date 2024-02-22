@@ -9,9 +9,8 @@ permissions: write-all
 jobs:
   configure:
     runs-on: ubuntu-latest
-    if: ${{ github.event.created && github.repository != 'thedayismyenemy/BlazorTemplate' }}
+    if: ${{ github.event.created && github.repository != 'TheDayIsMyEnemy/BlazorTemplate' }}
     steps:
-
       - name: Checkout repository
         uses: actions/checkout@v3
 
@@ -21,24 +20,18 @@ jobs:
 
       - name: Rename files and folders
         run: |
-          find ../../ ! -path . -name '.*' -prune -o -type d -exec bash -c 'mv "{}" "$(echo "{}" | sed "s/BlazorTemplate/'"${{ steps.repo_name.outputs.name }}/"'")"' \;
-          find ../../ ! -path . -name '.*' -prune -o -type f \( -name '*.cs' -o -name '*.csproj' -o -name '*.sln' \) -exec bash -c 'mv "{}" "$(echo "{}" | sed "s/BlazorTemplate/'"${{ steps.repo_name.outputs.name }}/g"'")"' \;
-          find ../../ -type f \( -name '*.razor' -o -name '*.cshtml' -o -name '*.cs' -o -name '*.csproj' -o -name '*.sln' -o -name '*.md' \) -exec sed -i "s/BlazorTemplate/'"${{ steps.repo_name.outputs.name }}"'/g" {} +
+          find ../../ ! -path . -name '.*' -prune -o -type d -exec bash -c 'mv "{}" "$(echo "{}" | sed "s/BlazorTemplate/${{ steps.repo_name.outputs.name }}/")"' \;
+          find ../../ ! -path . -name '.*' -prune -o -type f \( -name '*.cs' -o -name '*.csproj' -o -name '*.sln' \) -exec bash -c 'mv "{}" "$(echo "{}" | sed "s/BlazorTemplate/${{ steps.repo_name.outputs.name }}/g")"' \;
+          find ../../ -type f \( -name '*.razor' -o -name '*.cshtml' -o -name '*.cs' -o -name '*.csproj' -o -name '*.sln' -o -name '*.md' \) -exec sed -i "s/BlazorTemplate/${{ steps.repo_name.outputs.name }}/g" {} +
 
       - name: Remove setup files
         run: rm .github/workflows/configure-new-repo.yml
-
-      # - name: Commit changes
-      #   run: |
-      #     git config user.name "TheDayIsMyEnemy"
-      #     git config user.email "thedayismyenemy@users.noreply.github.com"
-      #     git commit -am "Configure new repository"
 
       - name: Create pull request
         id: cpr
         uses: peter-evans/create-pull-request@v3
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.PAT_TOKEN }}
           commit-message: Configure new repo
           title: Configure new repo
           body: This pull request renames folders and namespaces to match the repository name.
