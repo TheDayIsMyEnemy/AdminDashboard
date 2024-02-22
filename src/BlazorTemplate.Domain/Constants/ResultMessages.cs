@@ -1,4 +1,4 @@
-namespace BlazorTemplate.Domain.Constants
+namespace ${repo_name}.Domain.Constants
 {
     public static class ResultMessages
     {

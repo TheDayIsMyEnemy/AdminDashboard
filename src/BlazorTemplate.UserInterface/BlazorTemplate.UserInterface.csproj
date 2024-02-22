@@ -18,9 +18,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BlazorTemplate.Application\BlazorTemplate.Application.csproj" />
-    <ProjectReference Include="..\BlazorTemplate.Domain\BlazorTemplate.Domain.csproj" />
-    <ProjectReference Include="..\BlazorTemplate.Infrastructure\BlazorTemplate.Infrastructure.csproj" />
+    <ProjectReference Include="..\${repo_name}.Application\${repo_name}.Application.csproj" />
+    <ProjectReference Include="..\${repo_name}.Domain\${repo_name}.Domain.csproj" />
+    <ProjectReference Include="..\${repo_name}.Infrastructure\${repo_name}.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

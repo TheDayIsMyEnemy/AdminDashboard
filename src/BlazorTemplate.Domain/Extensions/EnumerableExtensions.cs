@@ -1,4 +1,4 @@
-namespace BlazorTemplate.Domain.Extensions
+namespace ${repo_name}.Domain.Extensions
 {
     public static class EnumerableExtensions
     {

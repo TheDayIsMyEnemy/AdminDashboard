@@ -1,7 +1,7 @@
-using BlazorTemplate.Domain.Entities;
+using ${repo_name}.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace BlazorTemplate.Infrastructure.Data
+namespace ${repo_name}.Infrastructure.Data
 {
     public class AppDbContext : DbContext
     {
