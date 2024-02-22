@@ -40,7 +40,7 @@ jobs:
         if: github.event_name == 'push' && github.event.before == '0000000000000000000000000000000000000000'
         uses: peter-evans/create-pull-request@v3
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.PAT_TOKEN }}
           title: Configure New Repository
           body: This pull request renames folders and namespaces to match the repository name.
           branch: main
