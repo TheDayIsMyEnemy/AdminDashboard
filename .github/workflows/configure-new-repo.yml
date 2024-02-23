@@ -31,13 +31,11 @@ jobs:
           find . ! -path . -name '.*' -prune -o -type d -exec bash -c 'mv "{}" "$(echo "{}" | sed ${{ steps.repo_name.outputs.pattern }})"' \;
           find . ! -path . -name '.*' -prune -o -type f \( -name '*.cs' -o -name '*.csproj' -o -name '*.sln' \) -exec bash -c 'mv "{}" "$(echo "{}" | sed ${{ steps.repo_name.outputs.pattern }})"' \;
           find . -type f \( -name '*.razor' -o -name '*.cshtml' -o -name '*.cs' -o -name '*.csproj' -o -name '*.sln' -o -name '*.md' \) -exec sed -i ${{ steps.repo_name.outputs.pattern }} {} +
-
-      - name: Remove setup files
-        run: rm .github/workflows/configure-new-repo.yml
+          rm .github/workflows/configure-new-repo.yml
 
       - name: Commit changes
         env:
-          GH_TOKEN: ${{ secrets.PAT_TOKEN || secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config user.name 'TheDayIsMyEnemy'
           git config user.email 'TheDayIsMyEnemy@users.noreply.github.com'
@@ -45,7 +43,3 @@ jobs:
           git add -A
           git commit -m "Update project structure"
           git push -u origin new-repo
-
-      - name: Create pull request
-        run: gh pr create --title test --body tesxt --base main --head new-repo
-        # run: gh pr create --repo ${{ github.event.repository.url }} --base main --head new-repo --title 'Setup new repository' --body 'Updates the project structure to match the repo name'
