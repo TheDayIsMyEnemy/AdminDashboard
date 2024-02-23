@@ -27,7 +27,7 @@ jobs:
 
       - name: Update project structure
         run: |
-          cd src
+          ls -l
 
           find . ! -path . -name '.*' -prune -o -type d -exec bash -c 'mv "{}" "$(echo "{}" | sed "s/BlazorTemplate/${{ steps.repo_name.outputs.name }}/g")"' \;
 
