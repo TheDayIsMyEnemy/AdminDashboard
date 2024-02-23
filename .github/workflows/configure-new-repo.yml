@@ -9,6 +9,7 @@ jobs:
   update-files:
     runs-on: ubuntu-latest
 
+    if: ${{ github.event.created && github.repository != 'TheDayIsMyEnemy/BlazorTemplate' }}
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
