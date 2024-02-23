@@ -16,24 +16,24 @@ permissions:
 jobs:
   configure:
     runs-on: ubuntu-latest
-    if: ${{ github.event.created && github.repository != 'TheDayIsMyEnemy/BlazorTemplate' }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v2
 
       - name: Set repository name
         id: repo_name
-        run: echo "::set-output name=name::${{ github.event.repository.name }}"
+        run: |
+            echo "::set-output name=name::${{ github.event.repository.name }}"
+            echo "::set-output pattern=pattern::s/BlazorTemplate/${{ github.event.repository.name }}/g"
 
       - name: Update project structure
         run: |
           ls -l
-
-          find . ! -path . -name '.*' -prune -o -type d -exec bash -c 'mv "{}" "$(echo "{}" | sed "s/BlazorTemplate/${{ steps.repo_name.outputs.name }}/g")"' \;
-
-          find . ! -path . -name '.*' -prune -o -type f \( -name '*.cs' -o -name '*.csproj' -o -name '*.sln' \) -exec bash -c 'mv "{}" "$(echo "{}" | sed "s/BlazorTemplate/${{ steps.repo_name.outputs.name }}/g")"' \;
-
-          find . -type f \( -name '*.razor' -o -name '*.cshtml' -o -name '*.cs' -o -name '*.csproj' -o -name '*.sln' -o -name '*.md' \) -exec sed -i "s/BlazorTemplate/${{ steps.repo_name.outputs.name }}/g" {} +
+          cd src
+          ls -l
+          find . ! -path . -name '.*' -prune -o -type d -exec bash -c 'mv "{}" "$(echo "{}" | sed ${{ steps.repo_name.outputs.pattern }})"' \;
+          find . ! -path . -name '.*' -prune -o -type f \( -name '*.cs' -o -name '*.csproj' -o -name '*.sln' \) -exec bash -c 'mv "{}" "$(echo "{}" | sed ${{ steps.repo_name.outputs.pattern }})"' \;
+          find . -type f \( -name '*.razor' -o -name '*.cshtml' -o -name '*.cs' -o -name '*.csproj' -o -name '*.sln' -o -name '*.md' \) -exec sed -i ${{ steps.repo_name.outputs.pattern }} {} +
 
       - name: Remove setup files
         run: rm .github/workflows/configure-new-repo.yml
