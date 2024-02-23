@@ -1,4 +1,4 @@
-name: Configure New Repository
+name: Configure new repo
 on:
   push:
     branches:
@@ -14,7 +14,7 @@ permissions:
   statuses: read
 
 jobs:
-  configure:
+  configure-new-repo:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -42,7 +42,8 @@ jobs:
           echo "Contents after renaming:"
           ls -R
 
-          find . -type f \( -name '*.razor' -o -name '*.cshtml' -o -name '*.cs' -o -name '*.csproj' -o -name '*.sln' -o -name '*.md' \) -exec bash -c 'echo "Updating content in file: {}"' \; -exec sed -i ${{ steps.repo_name.outputs.pattern }} {} +
+          # Redirecting stderr to /dev/null to suppress error messages
+          find . -type f \( -name '*.razor' -o -name '*.cshtml' -o -name '*.cs' -o -name '*.csproj' -o -name '*.sln' -o -name '*.md' \) -exec bash -c 'echo "Updating content in file: {}"' \; -exec sed -i ${{ steps.repo_name.outputs.pattern }} {} + 2>/dev/null
 
           rm .github/workflows/configure-new-repo.yml
           echo "Contents after removing workflow file:"
