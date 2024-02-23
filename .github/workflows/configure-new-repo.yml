@@ -1,4 +1,4 @@
-name: Configure new repo
+name: Configure New Repository
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  update-files:
+  configure-new-repo:
     runs-on: ubuntu-latest
 
     if: ${{ github.event.created && github.repository != 'TheDayIsMyEnemy/BlazorTemplate' }}
@@ -19,7 +19,7 @@ jobs:
         git config --global user.email "thedayismyenemy@users.github.no-reply.com"
         git config --global user.name "thedayismyenemy"
 
-    - name: Update project structure
+    - name: Update Project Structure
       run: |
         old_name='BlazorTemplate'
         new_name=${{ github.event.repository.name }}
@@ -27,15 +27,20 @@ jobs:
         find . -maxdepth 5 -type f \( -name '*.sln' -o -name '*.csproj' -o -name '*.cshtml' -o -name '*.razor' -o -name '*.cs' -o -name '*.md' \) -exec bash -c 'mv "{}" "$(echo "{}" | sed -e "s/'"${old_name}"'/'"${new_name}"'/")"' \;
         find . -type f \( -name '*.sln' -o -name '*.csproj' -o -name '*.cshtml' -o -name '*.razor' -o -name '*.cs' -o -name '*.md' \) -exec sed -i "s/$old_name/$new_name/g" {} +
         rm .github/workflows/configure-new-repo.yml
+
+    - name: Commit and Push Changes
+      run: |
         git add -A
         git commit -m "Update project structure"
-        git push
+        git push origin main
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Create Pull Request
       id: cpr
       uses: peter-evans/create-pull-request@v3
       with:
-        title: "Update files and folders to match repository name"
+        title: "Update project structure to match repository name"
         labels: "auto-update"
         branch: "main"
         base: "main"
