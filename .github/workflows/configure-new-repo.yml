@@ -25,13 +25,15 @@ jobs:
         id: repo_name
         run: echo "::set-output name=name::${{ github.event.repository.name }}"
 
-      - name: Rename files and folders
+      - name: Update project structure
         run: |
-          find ../../src ! -path . -name '.*' -prune -o -type d -exec bash -c 'mv "{}" "$(echo "{}" | sed "s/BlazorTemplate/${{ steps.repo_name.outputs.name }}/g")"' \;
+          cd src
 
-          find ../../src ! -path . -name '.*' -prune -o -type f \( -name '*.cs' -o -name '*.csproj' -o -name '*.sln' \) -exec bash -c 'mv "{}" "$(echo "{}" | sed "s/BlazorTemplate/${{ steps.repo_name.outputs.name }}/g")"' \;
+          find . ! -path . -name '.*' -prune -o -type d -exec bash -c 'mv "{}" "$(echo "{}" | sed "s/BlazorTemplate/${{ steps.repo_name.outputs.name }}/g")"' \;
 
-          find ../../src -type f \( -name '*.razor' -o -name '*.cshtml' -o -name '*.cs' -o -name '*.csproj' -o -name '*.sln' -o -name '*.md' \) -exec sed -i "s/BlazorTemplate/${{ steps.repo_name.outputs.name }}/g" {} +
+          find . ! -path . -name '.*' -prune -o -type f \( -name '*.cs' -o -name '*.csproj' -o -name '*.sln' \) -exec bash -c 'mv "{}" "$(echo "{}" | sed "s/BlazorTemplate/${{ steps.repo_name.outputs.name }}/g")"' \;
+
+          find . -type f \( -name '*.razor' -o -name '*.cshtml' -o -name '*.cs' -o -name '*.csproj' -o -name '*.sln' -o -name '*.md' \) -exec sed -i "s/BlazorTemplate/${{ steps.repo_name.outputs.name }}/g" {} +
 
       - name: Remove setup files
         run: rm .github/workflows/configure-new-repo.yml
