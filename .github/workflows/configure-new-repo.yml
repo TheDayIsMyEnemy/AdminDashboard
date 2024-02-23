@@ -24,14 +24,27 @@ jobs:
         run: |
             echo "::set-output name=name::${{ github.event.repository.name }}"
             echo "::set-output name=pattern::s/BlazorTemplate/${{ github.event.repository.name }}/g"
+            echo "Repository Name: ${{ steps.repo_name.outputs.name }}"
+            echo "Pattern: ${{ steps.repo_name.outputs.pattern }}"
 
       - name: Update project structure
         run: |
           ls src -l
-          find . ! -path . -name '.*' -prune -o -type d -exec bash -c 'mv "{}" "$(echo "{}" | sed ${{ steps.repo_name.outputs.pattern }})"' \;
-          find . ! -path . -name '.*' -prune -o -type f \( -name '*.cs' -o -name '*.csproj' -o -name '*.sln' \) -exec bash -c 'mv "{}" "$(echo "{}" | sed ${{ steps.repo_name.outputs.pattern }})"' \;
-          find . -type f \( -name '*.razor' -o -name '*.cshtml' -o -name '*.cs' -o -name '*.csproj' -o -name '*.sln' -o -name '*.md' \) -exec sed -i ${{ steps.repo_name.outputs.pattern }} {} +
+          echo "Contents before renaming:"
+          ls -R
+
+          find . ! -path . -name '.*' -prune -o -type d -exec bash -c 'echo "Renaming directory: {} to $(echo "{}" | sed ${{ steps.repo_name.outputs.pattern }})"' \; -exec bash -c 'mv "{}" "$(echo "{}" | sed ${{ steps.repo_name.outputs.pattern }})"' \;
+
+          find . ! -path . -name '.*' -prune -o -type f \( -name '*.cs' -o -name '*.csproj' -o -name '*.sln' \) -exec bash -c 'echo "Renaming file: {} to $(echo "{}" | sed ${{ steps.repo_name.outputs.pattern }})"' \; -exec bash -c 'mv "{}" "$(echo "{}" | sed ${{ steps.repo_name.outputs.pattern }})"' \;
+
+          echo "Contents after renaming:"
+          ls -R
+
+          find . -type f \( -name '*.razor' -o -name '*.cshtml' -o -name '*.cs' -o -name '*.csproj' -o -name '*.sln' -o -name '*.md' \) -exec bash -c 'echo "Updating content in file: {}"' \; -exec sed -i ${{ steps.repo_name.outputs.pattern }} {} +
+
           rm .github/workflows/configure-new-repo.yml
+          echo "Contents after removing workflow file:"
+          ls -R
 
       - name: Commit changes
         env:
@@ -40,5 +53,7 @@ jobs:
           git config user.name 'TheDayIsMyEnemy'
           git config user.email 'TheDayIsMyEnemy@users.noreply.github.com'
           git checkout -b new-repo
-          git commit -am "Update project structure"
+          git add .
+          git status
+          git commit -m "Update project structure"
           git push -u origin new-repo
