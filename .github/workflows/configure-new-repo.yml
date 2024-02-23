@@ -34,15 +34,15 @@ jobs:
           ls -R
 
           # Renaming directories
-          find src -type d -name 'BlazorTemplate*' -exec bash -c 'echo "Renaming directory: {} to $(echo "{}" | sed ${{ steps.repo_name.outputs.pattern }})"' \; -exec bash -c 'mv "{}" "$(echo "{}" | sed ${{ steps.repo_name.outputs.pattern }})"' \;
+          find . -type d -name 'BlazorTemplate*' -exec bash -c 'echo "Renaming directory: {} to $(echo "{}" | sed ${{ steps.repo_name.outputs.pattern }})"' \; -exec bash -c 'mv "{}" "$(echo "{}" | sed ${{ steps.repo_name.outputs.pattern }})"' \;
 
           # Renaming files
-          find src -type f \( -name '*.cs' -o -name '*.csproj' -o -name '*.sln' -o -name '*.razor' -o -name '*.cshtml' -o -name '*.md' \) -exec bash -c 'echo "Renaming file: {} to $(echo "{}" | sed ${{ steps.repo_name.outputs.pattern }})"' \; -exec bash -c 'mv "{}" "$(echo "{}" | sed ${{ steps.repo_name.outputs.pattern }})"' \;
+          find . -type f \( -name '*.cs' -o -name '*.csproj' -o -name '*.sln' -o -name '*.razor' -o -name '*.cshtml' -o -name '*.md' \) -exec bash -c 'echo "Renaming file: {} to $(echo "{}" | sed ${{ steps.repo_name.outputs.pattern }})"' \; -exec bash -c 'mv "{}" "$(echo "{}" | sed ${{ steps.repo_name.outputs.pattern }})"' \;
 
           echo "Contents after renaming:"
           ls -R
 
-          find src -type f \( -name '*.razor' -o -name '*.cshtml' -o -name '*.cs' -o -name '*.csproj' -o -name '*.sln' -o -name '*.md' \) -exec bash -c 'echo "Updating content in file: {}"' \; -exec sed -i ${{ steps.repo_name.outputs.pattern }} {} +
+          find . -type f \( -name '*.razor' -o -name '*.cshtml' -o -name '*.cs' -o -name '*.csproj' -o -name '*.sln' -o -name '*.md' \) -exec bash -c 'echo "Updating content in file: {}"' \; -exec sed -i ${{ steps.repo_name.outputs.pattern }} {} +
 
           rm .github/workflows/configure-new-repo.yml
           echo "Contents after removing workflow file:"
