@@ -17,20 +17,17 @@ jobs:
   configure:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
       - name: Set repository name
         id: repo_name
         run: |
             echo "::set-output name=name::${{ github.event.repository.name }}"
-            echo "::set-output pattern=pattern::s/BlazorTemplate/${{ github.event.repository.name }}/g"
+            echo "::set-output name=pattern::s/BlazorTemplate/${{ github.event.repository.name }}/g"
 
       - name: Update project structure
         run: |
-          ls -l
-          cd src
-          ls -l
+          ls src -l
           find . ! -path . -name '.*' -prune -o -type d -exec bash -c 'mv "{}" "$(echo "{}" | sed ${{ steps.repo_name.outputs.pattern }})"' \;
           find . ! -path . -name '.*' -prune -o -type f \( -name '*.cs' -o -name '*.csproj' -o -name '*.sln' \) -exec bash -c 'mv "{}" "$(echo "{}" | sed ${{ steps.repo_name.outputs.pattern }})"' \;
           find . -type f \( -name '*.razor' -o -name '*.cshtml' -o -name '*.cs' -o -name '*.csproj' -o -name '*.sln' -o -name '*.md' \) -exec sed -i ${{ steps.repo_name.outputs.pattern }} {} +
