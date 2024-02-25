@@ -34,4 +34,26 @@ jobs:
         git commit -m "Update project structure"
         git push origin main
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+    - name: Create Pull Request
+      id: cpr
+      uses: peter-evans/create-pull-request@v3
+      with:
+        title: "Update project structure to match repository name"
+        labels: "auto-update"
+        branch: "main"
+        base: "main"
+
+    - name: Close Pull Request
+      run: |
+        PR_NUMBER=$(echo "${{ steps.cpr.outputs.pull-request }}")
+        TOKEN=$GITHUB_TOKEN
+        COMMENT="Closing PR as completed. Thank you!"
+        curl -X POST -H "Authorization: Bearer $TOKEN" \
+          -H "Accept: application/vnd.github.v3+json" \
+          "https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER/comments" \
+          -d "{\"body\":\"$COMMENT\",\"event\":\"COMMENT\"}"
+        curl -X PATCH -H "Authorization: Bearer $TOKEN" \
+          -H "Accept: application/vnd.github.v3+json" \
+          "https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER" \
+          -d "{\"state\":\"closed\"}"
