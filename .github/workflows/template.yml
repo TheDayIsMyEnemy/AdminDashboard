@@ -18,8 +18,7 @@ jobs:
 
     if: ${{ github.event.created && github.repository != 'TheDayIsMyEnemy/BlazorTemplate' }}
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Rename files and folders
         run: |
