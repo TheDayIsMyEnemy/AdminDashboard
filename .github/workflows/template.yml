@@ -18,8 +18,11 @@ jobs:
 
     if: ${{ github.event.created && github.repository != 'TheDayIsMyEnemy/BlazorTemplate' }}
     steps:
-      - uses: actions/checkout@v4
-      - run: |
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Rename files and folders
+        run: |
           old_name='BlazorTemplate'
           new_name=${{ github.event.repository.name }}
           find . -maxdepth 2 -type d -name "$old_name*" -exec bash -c 'mv "{}" "$(echo "{}" | sed -e "s/'"${old_name}"'/'"${new_name}"'/")"' \;
@@ -27,9 +30,11 @@ jobs:
           find . -type f \( -name '*.sln' -o -name '*.csproj' -o -name '*.cshtml' -o -name '*.razor' -o -name '*.cs' -o -name '*.md' \) -exec sed -i "s/$old_name/$new_name/g" {} +
           rm .github/workflows/configure-new-repo.yml
 
+      - name: Commit changes
+        run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
-          
+
           git add -A
           git commit -m "Update project structure"
           git push
