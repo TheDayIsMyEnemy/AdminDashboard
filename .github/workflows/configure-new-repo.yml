@@ -30,24 +30,26 @@ jobs:
 
     - name: Commit and Push Changes
       run: |
+        git checkout -b "update-project-structure"
         git add -A
         git commit -m "Update project structure"
-        git push origin main
+        git push origin update-project-structure --force
       env:
         GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+        
     - name: Create Pull Request
       id: cpr
       uses: peter-evans/create-pull-request@v3
       with:
         title: "Update project structure to match repository name"
         labels: "auto-update"
-        branch: "main"
+        branch: "update-project-structure"
         base: "main"
 
     - name: Close Pull Request
       run: |
         PR_NUMBER=$(echo "${{ steps.cpr.outputs.pull-request }}")
-        TOKEN=$GITHUB_TOKEN
+        TOKEN=${{ secrets.PAT_TOKEN }}
         COMMENT="Closing PR as completed. Thank you!"
         curl -X POST -H "Authorization: Bearer $TOKEN" \
           -H "Accept: application/vnd.github.v3+json" \
