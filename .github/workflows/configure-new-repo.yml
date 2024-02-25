@@ -18,20 +18,18 @@ jobs:
 
     if: ${{ github.event.created && github.repository != 'TheDayIsMyEnemy/BlazorTemplate' }}
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+      - run: |
+          old_name='BlazorTemplate'
+          new_name=${{ github.event.repository.name }}
+          find . -maxdepth 2 -type d -name "$old_name*" -exec bash -c 'mv "{}" "$(echo "{}" | sed -e "s/'"${old_name}"'/'"${new_name}"'/")"' \;
+          find . -maxdepth 5 -type f \( -name '*.sln' -o -name '*.csproj' -o -name '*.cshtml' -o -name '*.razor' -o -name '*.cs' -o -name '*.md' \) -exec bash -c 'mv "{}" "$(echo "{}" | sed -e "s/'"${old_name}"'/'"${new_name}"'/")"' \;
+          find . -type f \( -name '*.sln' -o -name '*.csproj' -o -name '*.cshtml' -o -name '*.razor' -o -name '*.cs' -o -name '*.md' \) -exec sed -i "s/$old_name/$new_name/g" {} +
+          rm .github/workflows/configure-new-repo.yml
 
-    - name: Update Project Structure
-      run: |
-        old_name='BlazorTemplate'
-        new_name=${{ github.event.repository.name }}
-        find . -maxdepth 2 -type d -name "$old_name*" -exec bash -c 'mv "{}" "$(echo "{}" | sed -e "s/'"${old_name}"'/'"${new_name}"'/")"' \;
-        find . -maxdepth 5 -type f \( -name '*.sln' -o -name '*.csproj' -o -name '*.cshtml' -o -name '*.razor' -o -name '*.cs' -o -name '*.md' \) -exec bash -c 'mv "{}" "$(echo "{}" | sed -e "s/'"${old_name}"'/'"${new_name}"'/")"' \;
-        find . -type f \( -name '*.sln' -o -name '*.csproj' -o -name '*.cshtml' -o -name '*.razor' -o -name '*.cs' -o -name '*.md' \) -exec sed -i "s/$old_name/$new_name/g" {} +
-        rm .github/workflows/configure-new-repo.yml
-
-    - name: Commit and Push Changes
-      run: |
-        git add -A
-        git commit -m "Update project structure"
-        git push origin main --force
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          
+          git add -A
+          git commit -m "Update project structure"
+          git push
