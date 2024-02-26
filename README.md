@@ -1,3 +1,3 @@
 # BlazorTemplate
 
-[![Build and Test](https://github.com/TheDayIsMyEnemy/BlazorTemplate/actions/workflows/build.yml/badge.svg)](https://github.com/TheDayIsMyEnemy/BlazorTemplate/actions/workflows/build.yml) [![CodeQL](https://github.com/TheDayIsMyEnemy/BlazorTemplate/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/TheDayIsMyEnemy/BlazorTemplate/actions/workflows/github-code-scanning/codeql)
+[![Build](https://github.com/TheDayIsMyEnemy/BlazorTemplate/actions/workflows/build.yml/badge.svg)](https://github.com/TheDayIsMyEnemy/BlazorTemplate/actions/workflows/build.yml) [![CodeQL](https://github.com/TheDayIsMyEnemy/BlazorTemplate/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/TheDayIsMyEnemy/BlazorTemplate/actions/workflows/github-code-scanning/codeql) [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/dwyl/esta/issues)
