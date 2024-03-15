@@ -6,5 +6,10 @@ namespace BlazorTemplate.Infrastructure.Identity
 
         public const string LoginPath = "/account/login";
         public const string LogoutPath = "/account/logout";
+
+        public const string AdminRole = "Administrator";
+
+        public const string DefaultAdminEmail = "admin@blazor.template";
+        public const string DefaultAdminPassword = "AdminPassword1!";
     }
 }

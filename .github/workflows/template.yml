@@ -22,7 +22,7 @@ jobs:
           new_name=${{ github.event.repository.name }}
           find . -maxdepth 2 -type d -name "$old_name*" -exec bash -c 'mv "{}" "$(echo "{}" | sed -e "s/'"${old_name}"'/'"${new_name}"'/")"' \;
           find . -maxdepth 5 -type f \( -name '*.sln' -o -name '*.csproj' -o -name '*.cshtml' -o -name '*.razor' -o -name '*.cs' -o -name '*.md' \) -exec bash -c 'mv "{}" "$(echo "{}" | sed -e "s/'"${old_name}"'/'"${new_name}"'/")"' \;
-          find . -type f \( -name '*.sln' -o -name '*.csproj' -o -name '*.cshtml' -o -name '*.razor' -o -name '*.cs' -o -name '*.md' \) -exec sed -i "s/$old_name/$new_name/g" {} +
+          find . -type f \( -name '*.sln' -o -name '*.csproj' -o -name '*.cshtml' -o -name '*.razor' -o -name '*.cs' -o -name '*.md' -o -name '*.json' \) -exec sed -i "s/$old_name/$new_name/g" {} +
           find . -type f \( -name '*.sln' \) -exec sed -i "s/TheDayIsMyEnemy/${{ github.actor }}/g" {} +
           rm .github/workflows/template.yml
 
