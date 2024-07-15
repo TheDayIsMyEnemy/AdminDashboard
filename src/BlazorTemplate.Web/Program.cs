@@ -38,6 +38,8 @@ builder.Services
         // options.User.AllowedUserNameCharacters = null;
     })
     .AddEntityFrameworkStores<AppIdentityDbContext>()
+    .AddSignInManager()
+    .AddDefaultTokenProviders()
     .AddUserConfirmation<UserConfirmation>();
 
 builder.Services.ConfigureApplicationCookie(options =>
@@ -50,6 +52,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 });
 
 builder.Services.AddRazorComponents().AddInteractiveServerComponents();
+
 builder.Services.AddMudServices();
 
 builder.Services.AddCascadingAuthenticationState();
@@ -89,6 +92,7 @@ app.UseStaticFiles();
 app.UseAntiforgery();
 
 app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
+
 app.MapAdditionalIdentityEndpoints();
 
 app.Run();
