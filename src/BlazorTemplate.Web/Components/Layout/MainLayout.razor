@@ -1,7 +1,8 @@
 ﻿@inherits LayoutComponentBase
-@using BlazorTemplate.Web.Themes
 
-<MudThemeProvider @ref="@_mudThemeProvider" @bind-IsDarkMode="@_isDarkMode" />
+
+<MudThemeProvider @ref="@_mudThemeProvider" @bind-IsDarkMode="@_isDarkMode"
+    Theme="BlazorTemplate.Web.Themes.DarkTheme.Instance" />
 <MudPopoverProvider />
 <MudDialogProvider />
 <MudSnackbarProvider />
@@ -33,8 +34,7 @@
 @code {
     private bool _isDrawerOpen = true;
     private bool _isDarkMode = false;
-    private DefaultTheme _defaultTheme = new();
-    private MudThemeProvider _mudThemeProvider;
+    private MudThemeProvider _mudThemeProvider = null!;
 
     private void DrawerToggle() => _isDrawerOpen = !_isDrawerOpen;
 
