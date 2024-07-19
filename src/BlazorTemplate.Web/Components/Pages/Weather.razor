@@ -1,12 +1,11 @@
 ﻿@page "/weather"
-@rendermode InteractiveServer
 
-<MyMudProviders />
+
 
 <PageTitle>Weather</PageTitle>
 
 <MudText Typo="Typo.h3" GutterBottom="true">Weather forecast</MudText>
-<MudText Class="mb-8">This component demonstrates fetching data from the server.</MudText>
+<MudText Typo="Typo.body1" Class="mb-8">This component demonstrates fetching data from the server.</MudText>
 
 @if (forecasts == null)
 {
@@ -14,7 +13,7 @@
 }
 else
 {
-    <MudTable Items="forecasts" Hover="true" SortLabel="Sort By" Elevation="0">
+  <MudTable Items="forecasts" Hover="true" SortLabel="Sort By" Elevation="0" AllowUnsorted="false">
         <HeaderContent>
             <MudTh><MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<WeatherForecast, object>(x=>x.Date)">Date</MudTableSortLabel></MudTh>
             <MudTh><MudTableSortLabel SortBy="new Func<WeatherForecast, object>(x=>x.TemperatureC)">Temp. (C)</MudTableSortLabel></MudTh>
@@ -38,7 +37,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        // Simulate asynchronous loading to demonstrate streaming rendering
+        // Simulate asynchronous loading to demonstrate a loading indicator
         await Task.Delay(500);
 
         var startDate = DateOnly.FromDateTime(DateTime.Now);

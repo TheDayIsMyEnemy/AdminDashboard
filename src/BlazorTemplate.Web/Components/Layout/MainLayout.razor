@@ -1,39 +1,39 @@
-﻿@using BlazorTemplate.Web.Components
-@inherits LayoutComponentBase
+﻿@inherits LayoutComponentBase
 
-<MyMudThemeProvider />
+<MudThemeProvider />
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+<MudLayout>
+    <MudAppBar Elevation="1">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+        <MudText Typo="Typo.h5" Class="ml-3">Application</MudText>
+        <MudSpacer />
+        <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" />
+    </MudAppBar>
+    <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
+        <NavMenu />
+    </MudDrawer>
+    <MudMainContent Class="mt-16 pa-4">
+        @Body
+    </MudMainContent>
+</MudLayout>
 
-<div class="page mud-layout">
-
-    <div class="sidebar mud-elevation-1">
-        <div class="top-row mud-drawer-head">
-            <div>
-                <a class="navbar-brand" href="https://mudblazor.com/" target="_blank">MudBlazor</a>
-            </div>
-        </div>
-
-        <input type="checkbox" title="Navigation menu" class="navbar-toggler" />
-        <div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
-            <NavMenu />
-        </div>
-
-    </div>
-
-     <main>
-        <div class="top-row px-4">
-            <MudIconButton Icon="@Icons.Custom.Brands.MudBlazor" Style="color: white;" Link="https://mudblazor.com/" Target="_blank" />
-            <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Style="color: white;" Link="https://github.com/MudBlazor/MudBlazor/" Target="_blank" />
-        </div>
-
-        <MudContainer MaxWidth="MaxWidth.ExtraExtraLarge" Class="my-2 pt-2">
-            @Body
-        </MudContainer>
-    </main>
-</div>
 
 <div id="blazor-error-ui">
     An unhandled error has occurred.
     <a href="" class="reload">Reload</a>
     <a class="dismiss">🗙</a>
 </div>
+
+@code {
+    private bool _drawerOpen = true;
+
+    private void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+
+}
+
 

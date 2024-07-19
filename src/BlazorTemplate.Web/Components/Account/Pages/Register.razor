@@ -17,42 +17,43 @@
 
 <PageTitle>Register</PageTitle>
 
-<h1>Register</h1>
+<MudText Typo="Typo.h3" GutterBottom="true">Register</MudText>
 
-<div class="row">
-    <div class="col-md-4">
+<MudGrid>
+    <MudItem md="6">
         <StatusMessage Message="@Message" />
         <EditForm Model="Input" asp-route-returnUrl="@ReturnUrl" method="post" OnValidSubmit="RegisterUser" FormName="register">
             <DataAnnotationsValidator />
-            <h2>Create a new account.</h2>
-            <hr />
-            <ValidationSummary class="text-danger" role="alert" />
-            <div class="form-floating mb-3">
-                <InputText @bind-Value="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                <label for="email">Email</label>
-                <ValidationMessage For="() => Input.Email" class="text-danger" />
-            </div>
-            <div class="form-floating mb-3">
-                <InputText type="password" @bind-Value="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label for="password">Password</label>
-                <ValidationMessage For="() => Input.Password" class="text-danger" />
-            </div>
-            <div class="form-floating mb-3">
-                <InputText type="password" @bind-Value="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label for="confirm-password">Confirm Password</label>
-                <ValidationMessage For="() => Input.ConfirmPassword" class="text-danger" />
-            </div>
-            <button type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
+
+            <MudText Typo="Typo.body1" GutterBottom="true">Create a new account.</MudText>
+
+            <MudGrid>
+                <MudItem md="12">
+                    <MudStaticTextField For="@(() => Input.Email)" @bind-Value="Input.Email"
+                                        Label="Email" Placeholder="name@example.com"
+                                        UserAttributes="@(new() { { "autocomplete", "true" }, { "aria-required", "true" } } )" />
+                </MudItem>
+                <MudItem md="12">
+                    <MudStaticTextField For="@(() => Input.Password)" @bind-Value="Input.Password"
+                                        Label="Password" InputType="InputType.Password" Placeholder="password"
+                                        UserAttributes="@(new() { { "autocomplete", "new-password" }, { "aria-required", "true" } } )" />
+                </MudItem>
+                <MudItem md="12">
+                    <MudStaticTextField For="@(() => Input.ConfirmPassword)" @bind-Value="Input.ConfirmPassword"
+                                        Label="Confirm Password" InputType="InputType.Password" Placeholder="confirm password"
+                                        UserAttributes="@(new() { { "autocomplete", "new-password" }, { "aria-required", "true" } } )" />
+                </MudItem>
+                <MudItem md="12">
+                    <MudStaticButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" FormAction="FormAction.Submit">Register</MudStaticButton>
+                </MudItem>
+            </MudGrid>
         </EditForm>
-    </div>
-    <div class="col-md-6 col-md-offset-2">
-        <section>
-            <h3>Use another service to register.</h3>
-            <hr />
-            <ExternalLoginPicker />
-        </section>
-    </div>
-</div>
+    </MudItem>
+    <MudItem md="6">
+        <MudText Typo="Typo.body1" GutterBottom="true">Use another service to register.</MudText>
+        <ExternalLoginPicker />
+    </MudItem>
+</MudGrid>
 
 @code {
     private IEnumerable<IdentityError>? identityErrors;
