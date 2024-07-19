@@ -5,22 +5,21 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.EntityFrameworkCore;
 using BlazorTemplate.Web.Components;
 using BlazorTemplate.Web.Components.Account;
-using BlazorTemplate.Infrastructure.Data;
-using BlazorTemplate.Infrastructure.Identity;
-using BlazorTemplate.Infrastructure;
+using BlazorTemplate.Web.Identity;
+using BlazorTemplate.Web;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseSerilog((context, services, loggerConfig) =>
     loggerConfig.ReadFrom.Configuration(context.Configuration));
 
-var dbConnectionString = builder.Configuration.GetConnectionString("BlazorTemplate");
+// var dbConnectionString = builder.Configuration.GetConnectionString("BlazorTemplate");
 var identityDbConnectionString = builder.Configuration.GetConnectionString("BlazorTemplate.Identity");
-builder.Services.AddDbContextFactory<AppDbContext>(
-    options =>
-        options
-            .UseMySql(dbConnectionString, ServerVersion.AutoDetect(dbConnectionString))
-            .LogTo(Console.WriteLine, LogLevel.Information));
+// builder.Services.AddDbContextFactory<AppDbContext>(
+//     options =>
+//         options
+//             .UseMySql(dbConnectionString, ServerVersion.AutoDetect(dbConnectionString))
+//             .LogTo(Console.WriteLine, LogLevel.Information));
 builder.Services.AddDbContextFactory<AppIdentityDbContext>(
     options =>
         options
@@ -69,8 +68,8 @@ using (var scope = app.Services.CreateScope())
     var scopedProvider = scope.ServiceProvider;
     try
     {
-        var appDbContext = scopedProvider.GetRequiredService<AppDbContext>();
-        await AppDbContextSeed.Seed(appDbContext, app.Logger);
+        // var appDbContext = scopedProvider.GetRequiredService<AppDbContext>();
+        // await AppDbContextSeed.Seed(appDbContext, app.Logger);
 
         var userManager = scopedProvider.GetRequiredService<UserManager<User>>();
         var roleManager = scopedProvider.GetRequiredService<RoleManager<Role>>();

@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace BlazorTemplate.Infrastructure.Identity
+namespace BlazorTemplate.Web.Identity
 {
     public class AppIdentityDbContext
         : IdentityDbContext<User,

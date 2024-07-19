@@ -1,4 +1,4 @@
-namespace BlazorTemplate.Infrastructure.Identity
+namespace BlazorTemplate.Web.Identity
 {
     public static class Constants
     {
@@ -9,7 +9,7 @@ namespace BlazorTemplate.Infrastructure.Identity
 
         public const string AdminRole = "Administrator";
 
-        public const string DefaultAdminEmail = "admin@blazor.template";
-        public const string DefaultAdminPassword = "AdminPassword1!";
+        public const string DefaultAdminEmail = "admin@blazor.life";
+        public const string DefaultAdminPassword = "BlazorLife1!";
     }
 }

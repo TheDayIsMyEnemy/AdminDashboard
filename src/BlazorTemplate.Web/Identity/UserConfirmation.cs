@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 
-namespace BlazorTemplate.Infrastructure.Identity
+namespace BlazorTemplate.Web.Identity
 {
     public class UserConfirmation : IUserConfirmation<User>
     {

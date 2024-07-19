@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
-using BlazorTemplate.Infrastructure.Identity;
+using BlazorTemplate.Web.Identity;
 
 namespace BlazorTemplate.Web.Components.Account;
 

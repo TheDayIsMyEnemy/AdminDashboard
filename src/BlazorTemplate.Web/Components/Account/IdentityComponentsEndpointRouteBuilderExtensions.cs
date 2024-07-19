@@ -1,6 +1,6 @@
 using System.Security.Claims;
 using System.Text.Json;
-using BlazorTemplate.Infrastructure.Identity;
+using BlazorTemplate.Web.Identity;
 using BlazorTemplate.Web.Components.Account.Pages;
 using BlazorTemplate.Web.Components.Account.Pages.Manage;
 using Microsoft.AspNetCore.Authentication;

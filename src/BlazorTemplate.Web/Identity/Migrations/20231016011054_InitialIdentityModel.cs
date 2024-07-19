@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace BlazorTemplate.Infrastructure.Identity.Migrations
+namespace BlazorTemplate.Web.Identity.Migrations
 {
     /// <inheritdoc />
     public partial class InitialIdentityModel : Migration

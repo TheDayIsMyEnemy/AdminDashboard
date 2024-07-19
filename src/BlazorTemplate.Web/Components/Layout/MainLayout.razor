@@ -1,17 +1,21 @@
 ﻿@inherits LayoutComponentBase
+@using BlazorTemplate.Web.Themes
 
-<MudThemeProvider />
+<MudThemeProvider @ref="@_mudThemeProvider" @bind-IsDarkMode="@_isDarkMode" />
 <MudPopoverProvider />
 <MudDialogProvider />
 <MudSnackbarProvider />
+
 <MudLayout>
     <MudAppBar Elevation="1">
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start"
+            OnClick="@((e) => DrawerToggle())" />
         <MudText Typo="Typo.h5" Class="ml-3">Application</MudText>
         <MudSpacer />
-        <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" />
+        <MudIconButton Icon="@(_isDarkMode ? @Icons.Material.Filled.WbSunny : @Icons.Material.Filled.Brightness4)"
+            Color="Color.Inherit" OnClick="DarkModeToggle" Edge="Edge.End" />
     </MudAppBar>
-    <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
+    <MudDrawer @bind-Open="_isDrawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
         <NavMenu />
     </MudDrawer>
     <MudMainContent Class="mt-16 pa-4">
@@ -27,13 +31,21 @@
 </div>
 
 @code {
-    private bool _drawerOpen = true;
+    private bool _isDrawerOpen = true;
+    private bool _isDarkMode = false;
+    private DefaultTheme _defaultTheme = new();
+    private MudThemeProvider _mudThemeProvider;
 
-    private void DrawerToggle()
+    private void DrawerToggle() => _isDrawerOpen = !_isDrawerOpen;
+
+    private void DarkModeToggle() => _isDarkMode = !_isDarkMode;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        _drawerOpen = !_drawerOpen;
+        if (firstRender)
+        {
+            _isDarkMode = await _mudThemeProvider!.GetSystemPreference();
+            StateHasChanged();
+        }
     }
-
 }
-
-
