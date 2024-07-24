@@ -1,8 +1,6 @@
 ﻿@inherits LayoutComponentBase
 
-
-<MudThemeProvider @ref="@_mudThemeProvider" @bind-IsDarkMode="@_isDarkMode"
-    Theme="AdminDashboard.Themes.DarkTheme.Instance" />
+<MudThemeProvider @ref="@_mudThemeProvider" @bind-IsDarkMode="@_isDarkMode" Theme="_theme" />
 <MudPopoverProvider />
 <MudDialogProvider />
 <MudSnackbarProvider />
@@ -35,6 +33,7 @@
     private bool _isDrawerOpen = true;
     private bool _isDarkMode = false;
     private MudThemeProvider _mudThemeProvider = null!;
+    private AdminDashboard.Themes.DarkTheme _theme = new AdminDashboard.Themes.DarkTheme();
 
     private void DrawerToggle() => _isDrawerOpen = !_isDrawerOpen;
 

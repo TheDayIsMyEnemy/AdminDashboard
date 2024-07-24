@@ -30,6 +30,8 @@ namespace AdminDashboard.Identity
                     userManager
                 );
             }
+
+            logger.LogInformation("Default user created");
         }
 
         private static async Task<User> CreateUser(

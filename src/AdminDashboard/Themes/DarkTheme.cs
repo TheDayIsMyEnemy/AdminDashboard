@@ -4,7 +4,7 @@ namespace AdminDashboard.Themes
 {
     public class DarkTheme : MudTheme
     {
-        public static MudTheme Instance = new DarkTheme()
+        public DarkTheme()
         {
             PaletteDark = new()
             {
@@ -33,7 +33,7 @@ namespace AdminDashboard.Themes
                 TableLines = "#33323e",
                 Divider = "#292838",
                 OverlayLight = "#1e1e2d80",
-            }
-        };
+            };
+        }
     }
 }

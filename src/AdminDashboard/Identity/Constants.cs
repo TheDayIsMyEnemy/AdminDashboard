@@ -4,8 +4,8 @@ namespace AdminDashboard.Identity
     {
         public const int DefaultPropertyLength = 50;
 
-        public const string LoginPath = "/account/login";
-        public const string LogoutPath = "/account/logout";
+        public const string LoginPath = "/Account/Login";
+        public const string LogoutPath = "/Account/Logout";
 
         public const string AdminRole = "Administrator";
 
