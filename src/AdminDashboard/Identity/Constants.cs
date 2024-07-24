@@ -2,8 +2,6 @@ namespace AdminDashboard.Identity
 {
     public static class Constants
     {
-        public const int DefaultPropertyLength = 50;
-
         public const string LoginPath = "/Account/Login";
         public const string LogoutPath = "/Account/Logout";
 

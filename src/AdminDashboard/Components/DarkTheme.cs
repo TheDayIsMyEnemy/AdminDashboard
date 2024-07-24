@@ -1,6 +1,6 @@
 using MudBlazor;
 
-namespace AdminDashboard.Themes
+namespace AdminDashboard.Components
 {
     public class DarkTheme : MudTheme
     {

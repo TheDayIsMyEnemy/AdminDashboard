@@ -3,18 +3,16 @@ using MudBlazor.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.EntityFrameworkCore;
-using AdminDashboard.Components;
 using AdminDashboard.Components.Account;
 using AdminDashboard.Identity;
-using AdminDashboard;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseSerilog((context, services, loggerConfig) =>
     loggerConfig.ReadFrom.Configuration(context.Configuration));
 
-// var dbConnectionString = builder.Configuration.GetConnectionString("BlazorTemplate");
-var identityDbConnectionString = builder.Configuration.GetConnectionString("BlazorTemplate.Identity");
+// var dbConnectionString = builder.Configuration.GetConnectionString("AdminDashboard");
+var identityDbConnectionString = builder.Configuration.GetConnectionString("AdminDashboard.Identity");
 // builder.Services.AddDbContextFactory<AppDbContext>(
 //     options =>
 //         options
@@ -90,7 +88,8 @@ if (!app.Environment.IsDevelopment())
 app.UseStaticFiles();
 app.UseAntiforgery();
 
-app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
+app.MapRazorComponents<AdminDashboard.Components.App>()
+    .AddInteractiveServerRenderMode();
 
 app.MapAdditionalIdentityEndpoints();
 

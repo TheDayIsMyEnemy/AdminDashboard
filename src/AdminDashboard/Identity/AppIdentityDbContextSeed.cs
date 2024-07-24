@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace AdminDashboard.Identity
 {
@@ -19,6 +18,8 @@ namespace AdminDashboard.Identity
             if (!roleManager.Roles.Any())
             {
                 await roleManager.CreateAsync(new Role(Constants.AdminRole));
+
+                logger.LogInformation("Default administrator role created");
             }
 
             if (!userManager.Users.Any())
@@ -29,9 +30,9 @@ namespace AdminDashboard.Identity
                     Constants.AdminRole,
                     userManager
                 );
-            }
 
-            logger.LogInformation("Default user created");
+                logger.LogInformation("Default user created");
+            }
         }
 
         private static async Task<User> CreateUser(

@@ -16,7 +16,7 @@ namespace AdminDashboard.Identity.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.2")
+                .HasAnnotation("ProductVersion", "8.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("AdminDashboard.Identity.Role", b =>
@@ -29,12 +29,12 @@ namespace AdminDashboard.Identity.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .HasMaxLength(24)
+                        .HasColumnType("varchar(24)");
 
                     b.Property<string>("NormalizedName")
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .HasMaxLength(24)
+                        .HasColumnType("varchar(24)");
 
                     b.HasKey("Id");
 
@@ -61,8 +61,8 @@ namespace AdminDashboard.Identity.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<string>("Email")
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("tinyint(1)");
@@ -78,15 +78,14 @@ namespace AdminDashboard.Identity.Migrations
                         .HasColumnType("varchar(256)");
 
                     b.Property<string>("NormalizedUserName")
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
 
                     b.Property<string>("PasswordHash")
                         .HasColumnType("longtext");
 
                     b.Property<string>("PhoneNumber")
-                        .HasMaxLength(15)
-                        .HasColumnType("varchar(15)");
+                        .HasColumnType("longtext");
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("tinyint(1)");
@@ -98,8 +97,8 @@ namespace AdminDashboard.Identity.Migrations
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("UserName")
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
 
                     b.HasKey("Id");
 
